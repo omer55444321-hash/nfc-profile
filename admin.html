@@ -256,10 +256,6 @@ function clearMsg(id){
 }
 
 
-function buildShareLink(slug){
-  return `https://ktlqactpljbnuwqukgiy.supabase.co/functions/v1/swift-responder?slug=${encodeURIComponent(slug)}`;
-}
-
 function buildSiteLink(slug){
   const base = window.location.origin + window.location.pathname.replace(/admin\.html$/,"");
   return `${base}?client=${encodeURIComponent(slug)}`;
@@ -267,7 +263,7 @@ function buildSiteLink(slug){
 
 function showSiteLink(slug){
   if(!slug) return;
-  const url = buildShareLink(slug);
+  const url = buildSiteLink(slug);
   $("siteLink").value = url;
   $("siteLinkBox").classList.remove("hidden");
 }
@@ -561,7 +557,7 @@ async function deleteCustomer(id){
 
 
 function openCustomerPage(slug){
-  const url = buildShareLink(slug);
+  const url = buildSiteLink(slug);
   window.open(url, "_blank", "noopener");
 }
 
