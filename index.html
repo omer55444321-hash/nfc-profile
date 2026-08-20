@@ -196,6 +196,22 @@
       el.removeAttribute("target");
       el.removeAttribute("rel");
     }
+    el.style.display = clean ? "" : "none";
+  }
+
+  function setOptionalLink(el, value) {
+    if (!el) return;
+    const clean = (value || "").trim();
+    el.style.display = clean ? "" : "none";
+    if (clean) {
+      el.href = clean;
+      el.target = "_blank";
+      el.rel = "noopener";
+    } else {
+      el.removeAttribute("href");
+      el.removeAttribute("target");
+      el.removeAttribute("rel");
+    }
   }
 
   function slugFromUrl() {
@@ -238,18 +254,24 @@
     document.getElementById("contactSub").dataset.tr =
       `Kişilerinizde ${nameTr} bilgilerini kaydedin`;
 
-    setLink(links.whatsapp, customer.whatsapp);
-    setLink(links.instagram, customer.instagram);
-    setLink(links.tiktok, customer.tiktok);
-    setLink(links.facebook, customer.facebook);
-    setLink(links.maps, customer.maps);
-    setLink(links.channel, customer.whatsapp_channel);
+    setOptionalLink(links.whatsapp, customer.whatsapp);
+    setOptionalLink(links.instagram, customer.instagram);
+    setOptionalLink(links.tiktok, customer.tiktok);
+    setOptionalLink(links.facebook, customer.facebook);
+    setOptionalLink(links.maps, customer.maps);
+    setOptionalLink(links.channel, customer.whatsapp_channel);
 
-    setLink(footer.whatsapp, customer.whatsapp);
-    setLink(footer.instagram, customer.instagram);
-    setLink(footer.tiktok, customer.tiktok);
-    setLink(footer.facebook, customer.facebook);
-    setLink(footer.channel, customer.whatsapp_channel);
+    setOptionalLink(footer.whatsapp, customer.whatsapp);
+    setOptionalLink(footer.instagram, customer.instagram);
+    setOptionalLink(footer.tiktok, customer.tiktok);
+    setOptionalLink(footer.facebook, customer.facebook);
+    setOptionalLink(footer.channel, customer.whatsapp_channel);
+
+    document.title = `${nameAr} | Digital Profile`;
+    const description = document.querySelector('meta[name="description"]');
+    if (description) {
+      description.setAttribute("content", bioAr);
+    }
 
     const contactLink = document.getElementById("contactLink");
     contactLink.removeAttribute("download");
