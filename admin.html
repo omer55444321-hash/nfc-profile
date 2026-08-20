@@ -736,9 +736,40 @@ $("saveBtn").addEventListener("click", async ()=>{
         : (savedRow.fill_expires_at ? `صالح حتى: ${new Date(savedRow.fill_expires_at).toLocaleString("ar-TR")}` : "الرابط صالح حتى يتم استخدامه.");
     }
 
-    showMsg("appMsg", editingId ? "تم تعديل العميل والصورة بنجاح" : "تمت إضافة العميل — رابط الموقع ورابط تعبئة البيانات جاهزان", true);
-    $("editorCard").classList.remove("hidden");
+    const wasEditing = Boolean(editingId);
+
+    if (wasEditing && savedRow) {
+      const i = customersCache.findIndex(r => r.id === editingId);
+      if (i !== -1) {
+        customersCache[i] = {
+          ...customersCache[i],
+          ...payload,
+          slug: savedRow.slug,
+          fill_token: savedRow.fill_token,
+          fill_used: savedRow.fill_used,
+          fill_expires_at: savedRow.fill_expires_at
+        };
+      }
+    }
+
     await loadCustomers();
+    renderCustomers();
+
+    showMsg(
+      "appMsg",
+      wasEditing
+        ? "تم تعديل العميل بنجاح وتحديث القائمة مباشرة"
+        : "تمت إضافة العميل — رابط الموقع ورابط تعبئة البيانات جاهزان",
+      true
+    );
+
+    if (wasEditing) {
+      $("editorCard").classList.add("hidden");
+      window.scrollTo({top:0,behavior:"smooth"});
+      editingId = null;
+    } else {
+      $("editorCard").classList.remove("hidden");
+    }
   }catch(error){
     showMsg("appMsg","تعذر الحفظ أو رفع الصورة: " + error.message);
   }
