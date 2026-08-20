@@ -101,11 +101,6 @@ th{background:#faf8f0}
         </div>
 
         <div class="field">
-          <label>الرابط المختصر (slug) *</label>
-          <input id="slug" placeholder="ahmad-gifts">
-        </div>
-
-        <div class="field">
           <label>اللغة الافتراضية</label>
           <select id="default_language">
             <option value="ar">العربية</option>
@@ -272,7 +267,7 @@ function clearForm(){
   editingId = null;
   $("editorTitle").textContent = "إضافة عميل";
   [
-    "name_ar","name_tr","slug","bio_ar","bio_tr","whatsapp",
+    "name_ar","name_tr","bio_ar","bio_tr","whatsapp",
     "instagram","tiktok","facebook","maps","whatsapp_channel",
     "phone","photo_url"
   ].forEach(id => $(id).value = "");
@@ -335,9 +330,13 @@ async function uploadCustomerImages(slug){
   return files;
 }
 
+function generateSlug(){
+  return "c-" + crypto.randomUUID().replaceAll("-", "").slice(0, 12);
+}
+
 function formData(){
   return {
-    slug: $("slug").value.trim().toLowerCase(),
+    slug: "",
     name_ar: $("name_ar").value.trim(),
     name_tr: $("name_tr").value.trim() || null,
     bio_ar: $("bio_ar").value.trim() || null,
@@ -637,12 +636,24 @@ $("saveBtn").addEventListener("click", async ()=>{
   clearMsg("appMsg");
   const payload = formData();
 
-  if(!payload.name_ar || !payload.slug){
-    showMsg("appMsg","الاسم العربي و الـ slug مطلوبان.");
+  if(!payload.name_ar){
+    showMsg("appMsg","الاسم العربي مطلوب.");
     return;
   }
 
   try{
+    if(!editingId){
+      payload.slug = generateSlug();
+    }else{
+      const {data:existing,error:existingError} = await client
+        .from("customers")
+        .select("slug")
+        .eq("id",editingId)
+        .single();
+      if(existingError) throw existingError;
+      payload.slug = existing.slug;
+    }
+
     const imageUrls = await uploadCustomerImages(payload.slug);
     Object.assign(payload, imageUrls);
 
@@ -663,14 +674,38 @@ $("saveBtn").addEventListener("click", async ()=>{
 
     if(result.error) throw result.error;
 
-    let savedSlug = payload.slug;
+    let savedRow = null;
+
     if(editingId){
-      const {data:updatedRow} = await client.from("customers").select("slug").eq("id",editingId).single();
-      if(updatedRow?.slug) savedSlug = updatedRow.slug;
+      const {data:updatedRow,error:updatedError} = await client
+        .from("customers")
+        .select("slug,fill_token,fill_used,fill_expires_at")
+        .eq("id",editingId)
+        .single();
+      if(updatedError) throw updatedError;
+      savedRow = updatedRow;
+    }else{
+      const {data:newRow,error:newRowError} = await client
+        .from("customers")
+        .select("slug,fill_token,fill_used,fill_expires_at")
+        .eq("slug",payload.slug)
+        .single();
+      if(newRowError) throw newRowError;
+      savedRow = newRow;
     }
 
-    showSiteLink(savedSlug);
-    showMsg("appMsg", editingId ? "تم تعديل العميل والصورة بنجاح" : "تمت إضافة العميل وبدء رابط التعبئة بنجاح", true);
+    showSiteLink(savedRow.slug);
+
+    if(savedRow.fill_token){
+      const fillUrl = `${window.location.origin}${window.location.pathname.replace(/admin\.html$/,"")}fill.html?token=${encodeURIComponent(savedRow.fill_token)}`;
+      $("fillLink").value = fillUrl;
+      $("fillLinkBox").classList.remove("hidden");
+      $("fillStatus").textContent = savedRow.fill_used
+        ? "تم استخدام الرابط."
+        : (savedRow.fill_expires_at ? `صالح حتى: ${new Date(savedRow.fill_expires_at).toLocaleString("ar-TR")}` : "الرابط صالح حتى يتم استخدامه.");
+    }
+
+    showMsg("appMsg", editingId ? "تم تعديل العميل والصورة بنجاح" : "تمت إضافة العميل — رابط الموقع ورابط تعبئة البيانات جاهزان", true);
     $("editorCard").classList.remove("hidden");
     await loadCustomers();
   }catch(error){
