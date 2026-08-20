@@ -13,6 +13,13 @@
 </head>
 
 <body>
+<div id="siteMaintenance" class="site-maintenance" aria-live="polite">
+  <div class="box">
+    <h2>الصفحة متوقفة مؤقتًا</h2>
+    <p>نعمل حاليًا على تحديث النظام. يرجى المحاولة لاحقًا.</p>
+  </div>
+</div>
+
   <main class="page">
 
     <section class="hero">
@@ -248,10 +255,10 @@
     const footerCredit = document.getElementById("footerCredit");
     if (footerCredit) {
       footerCredit.innerHTML = "🎁 &nbsp; Powered by <strong></strong>";
-      footerCredit.querySelector("strong").textContent = nameAr;
+      const creditName = footerCredit.querySelector("strong");
+      if (creditName) creditName.textContent = nameAr;
     }
-
-    document.getElementById("profileSubtitle").textContent = "Digital Profile";
+        document.getElementById("profileSubtitle").textContent = "Digital Profile";
     document.getElementById("profilePhoto").src = customer.photo_url || "online-gifts-logo.png";
     document.getElementById("profilePhoto").alt = nameAr;
 
@@ -326,8 +333,31 @@
     setLanguage(customer.default_language === "tr" ? "tr" : "ar");
   }
 
+  async function isCustomerPagesEnabled() {
+    const {data, error} = await supabaseClient
+      .from("site_settings")
+      .select("value_text")
+      .eq("key", "customer_pages_enabled")
+      .maybeSingle();
+
+    if (error) {
+      console.error("Global switch check failed:", error);
+      return true; // fail-open so a settings read issue does not hide live pages
+    }
+
+    return data?.value_text !== "false";
+  }
+
   async function loadCustomer() {
     const slug = slugFromUrl();
+
+    if (slug) {
+      const enabled = await isCustomerPagesEnabled();
+      if (!enabled) {
+        document.getElementById("siteMaintenance")?.classList.add("show");
+        return;
+      }
+    }
     const portfolioSection = document.getElementById("portfolioSection");
 
     if (!slug) {
