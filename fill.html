@@ -144,11 +144,42 @@ $("submitBtn").addEventListener("click",async()=>{
       photo_url:photoUrl
     };
 
-    const {error}=await client.rpc("submit_customer_form",{payload});
+    const {data:result,error}=await client.rpc("submit_customer_form",{payload});
     if(error) throw error;
+
+    const base = window.location.origin + window.location.pathname.replace(/fill\.html$/,"");
+    const siteUrl = `${base}?client=${encodeURIComponent(result.slug)}`;
 
     $("formCard").classList.add("hidden");
     msg("تم إرسال بياناتك بنجاح. شكرًا لك.");
+
+    const success = document.createElement("div");
+    success.className = "card";
+    success.innerHTML = `
+      <h2>رابط صفحتك جاهز ✅</h2>
+      <div class="muted" style="margin-bottom:10px">هذا هو الرابط الذي سيُستخدم على بطاقة NFC:</div>
+      <input id="finalSiteLink" readonly style="width:100%;font:inherit;padding:11px 12px;border:1px solid #d9d2c2;border-radius:10px;background:#fff" value="${siteUrl}">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+        <button class="primary" id="copyFinalLink" type="button">نسخ الرابط</button>
+        <button class="secondary" id="openFinalLink" type="button">فتح الصفحة</button>
+      </div>
+    `;
+    document.querySelector(".wrap").appendChild(success);
+
+    document.getElementById("copyFinalLink").addEventListener("click", async ()=>{
+      try{
+        await navigator.clipboard.writeText(siteUrl);
+      }catch{
+        const input = document.getElementById("finalSiteLink");
+        input.select();
+        document.execCommand("copy");
+      }
+      msg("تم نسخ رابط الصفحة.");
+    });
+
+    document.getElementById("openFinalLink").addEventListener("click", ()=>{
+      window.location.href = siteUrl;
+    });
   }catch(e){
     msg("تعذر إرسال البيانات: "+e.message);
   }
