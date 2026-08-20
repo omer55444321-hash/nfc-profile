@@ -246,8 +246,10 @@
     profileBio.textContent = bioAr;
 
     document.getElementById("profileSubtitle").textContent = "Digital Profile";
-    document.getElementById("profilePhoto").src = customer.photo_url || "online-gifts-logo.png";
-    document.getElementById("profilePhoto").alt = nameAr;
+    const profilePhoto = document.getElementById("profilePhoto");
+    profilePhoto.src = customer.photo_url || "online-gifts-logo.png";
+    profilePhoto.alt = nameAr;
+    profilePhoto.style.display = customer.show_photo === false ? "none" : "";
 
     document.getElementById("contactSub").dataset.ar =
       `احفظ بيانات ${nameAr}`;
