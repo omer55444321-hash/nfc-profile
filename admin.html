@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>لوحة إدارة Online Gifts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--gold:#d4af37;--dark:#111;--bg:#f4f3ef;--danger:#b3261e;--ok:#176b3a}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Cairo",Arial,sans-serif;background:var(--bg);color:#1a1a1a}
+.wrap{max-width:1050px;margin:auto;padding:22px}
+.card{background:#fff;border-radius:18px;padding:22px;box-shadow:0 8px 25px rgba(0,0,0,.08);margin-bottom:18px;border:1px solid #e7e2d4}
+h1,h2{margin:0 0 14px}
+h1{font-size:28px}
+h2{font-size:20px}
+.muted{color:#777;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field.full{grid-column:1/-1}
+label{font-weight:700;font-size:13px}
+input,textarea,select{font:inherit;padding:11px 12px;border:1px solid #d6d0c0;border-radius:10px;background:#fff}
+textarea{min-height:90px;resize:vertical}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+button{font:inherit;border:0;border-radius:10px;padding:11px 16px;cursor:pointer;font-weight:800}
+.primary{background:var(--gold);color:#111}
+.secondary{background:#efefef;color:#222}
+.danger{background:#f9d9d6;color:#7f1d1d}
+.ok{background:#dff3e7;color:#14532d}
+.hidden{display:none!important}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.status{font-size:13px;color:#555}
+.msg{margin-top:10px;padding:10px;border-radius:10px;background:#f7f7f7;display:none}
+.msg.show{display:block}
+.tablewrap{overflow:auto}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px;border-bottom:1px solid #eee;text-align:right;white-space:nowrap}
+th{background:#faf8f0}
+.badge{display:inline-block;padding:4px 9px;border-radius:999px;font-size:11px}
+.active{background:#dcf5e5;color:#176b3a}
+.inactive{background:#eee;color:#555}
+.loginbox{max-width:430px;margin:8vh auto}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.field.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section id="loginCard" class="card loginbox">
+    <h1>لوحة إدارة Online Gifts</h1>
+    <div class="muted">تسجيل الدخول للإدارة</div>
+    <div class="grid" style="margin-top:16px">
+      <div class="field full">
+        <label>البريد الإلكتروني</label>
+        <input id="email" type="email" autocomplete="username" value="omer55444321@gmail.com">
+      </div>
+      <div class="field full">
+        <label>كلمة المرور</label>
+        <input id="password" type="password" autocomplete="current-password">
+      </div>
+    </div>
+    <div class="actions">
+      <button class="primary" id="loginBtn">دخول</button>
+    </div>
+    <div id="loginMsg" class="msg"></div>
+  </section>
+
+  <section id="app" class="hidden">
+    <div class="card">
+      <div class="topbar">
+        <div>
+          <h1>لوحة العملاء</h1>
+          <div class="status" id="whoami"></div>
+        </div>
+        <button class="secondary" id="logoutBtn">تسجيل الخروج</button>
+      </div>
+      <div class="actions">
+        <button class="primary" id="newBtn">+ إضافة عميل</button>
+        <button class="secondary" id="refreshBtn">تحديث</button>
+      </div>
+      <div id="appMsg" class="msg"></div>
+    </div>
+
+    <section id="editorCard" class="card hidden">
+      <h2 id="editorTitle">إضافة عميل</h2>
+
+      <div class="grid">
+        <div class="field">
+          <label>الاسم بالعربي *</label>
+          <input id="name_ar">
+        </div>
+
+        <div class="field">
+          <label>الاسم بالتركي</label>
+          <input id="name_tr">
+        </div>
+
+        <div class="field">
+          <label>الرابط المختصر (slug) *</label>
+          <input id="slug" placeholder="ahmad-gifts">
+        </div>
+
+        <div class="field">
+          <label>اللغة الافتراضية</label>
+          <select id="default_language">
+            <option value="ar">العربية</option>
+            <option value="tr">Türkçe</option>
+          </select>
+        </div>
+
+        <div class="field full">
+          <label>الوصف بالعربي</label>
+          <textarea id="bio_ar"></textarea>
+        </div>
+
+        <div class="field full">
+          <label>الوصف بالتركي</label>
+          <textarea id="bio_tr"></textarea>
+        </div>
+
+        <div class="field">
+          <label>WhatsApp</label>
+          <input id="whatsapp">
+        </div>
+
+        <div class="field">
+          <label>Instagram</label>
+          <input id="instagram">
+        </div>
+
+        <div class="field">
+          <label>TikTok</label>
+          <input id="tiktok">
+        </div>
+
+        <div class="field">
+          <label>Facebook</label>
+          <input id="facebook">
+        </div>
+
+        <div class="field">
+          <label>Google Maps</label>
+          <input id="maps">
+        </div>
+
+        <div class="field">
+          <label>قناة WhatsApp</label>
+          <input id="whatsapp_channel">
+        </div>
+
+        <div class="field">
+          <label>رقم الهاتف</label>
+          <input id="phone">
+        </div>
+
+        <div class="field">
+          <label>رابط الصورة</label>
+          <input id="photo_url" placeholder="https://...">
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="saveBtn">حفظ العميل</button>
+        <button class="secondary" id="cancelBtn">إلغاء</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>العملاء</h2>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr>
+              <th>الاسم</th>
+              <th>الرابط</th>
+              <th>اللغة</th>
+              <th>الحالة</th>
+              <th>إجراء</th>
+            </tr>
+          </thead>
+          <tbody id="customersBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </section>
+</div>
+
+<script>
+/*
+  مهم:
+  1) SUPABASE_URL معروف من مشروعك.
+  2) ضع فقط Publishable/anon public key هنا.
+  لا تضع service_role أو أي secret.
+*/
+const SUPABASE_URL = "https://ktlqactpljbnuwqkgiy.supabase.co";
+const SUPABASE_ANON_KEY = "PUT_YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY_HERE";
+
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let editingId = null;
+
+const $ = (id) => document.getElementById(id);
+
+function showMsg(id, text, ok=false){
+  const el = $(id);
+  el.textContent = text;
+  el.classList.add("show");
+  el.style.background = ok ? "#e5f5eb" : "#f7f7f7";
+  el.style.color = ok ? "#176b3a" : "#333";
+}
+
+function clearMsg(id){
+  const el = $(id);
+  el.textContent = "";
+  el.classList.remove("show");
+}
+
+function clearForm(){
+  editingId = null;
+  $("editorTitle").textContent = "إضافة عميل";
+  [
+    "name_ar","name_tr","slug","bio_ar","bio_tr","whatsapp",
+    "instagram","tiktok","facebook","maps","whatsapp_channel",
+    "phone","photo_url"
+  ].forEach(id => $(id).value = "");
+  $("default_language").value = "ar";
+}
+
+function formData(){
+  return {
+    slug: $("slug").value.trim().toLowerCase(),
+    name_ar: $("name_ar").value.trim(),
+    name_tr: $("name_tr").value.trim() || null,
+    bio_ar: $("bio_ar").value.trim() || null,
+    bio_tr: $("bio_tr").value.trim() || null,
+    whatsapp: $("whatsapp").value.trim() || null,
+    instagram: $("instagram").value.trim() || null,
+    tiktok: $("tiktok").value.trim() || null,
+    facebook: $("facebook").value.trim() || null,
+    maps: $("maps").value.trim() || null,
+    whatsapp_channel: $("whatsapp_channel").value.trim() || null,
+    phone: $("phone").value.trim() || null,
+    photo_url: $("photo_url").value.trim() || null,
+    default_language: $("default_language").value,
+    is_active: true
+  };
+}
+
+async function requireSession(){
+  const {data:{session}} = await client.auth.getSession();
+  if(session){
+    $("loginCard").classList.add("hidden");
+    $("app").classList.remove("hidden");
+    $("whoami").textContent = "مسجل الدخول: " + (session.user.email || "");
+    await loadCustomers();
+  }else{
+    $("loginCard").classList.remove("hidden");
+    $("app").classList.add("hidden");
+  }
+}
+
+async function loadCustomers(){
+  clearMsg("appMsg");
+  const {data, error} = await client
+    .from("customers")
+    .select("id,slug,name_ar,name_tr,default_language,is_active")
+    .order("created_at",{ascending:false});
+
+  if(error){
+    showMsg("appMsg","خطأ في تحميل العملاء: " + error.message);
+    return;
+  }
+
+  const body = $("customersBody");
+  body.innerHTML = "";
+
+  if(!data.length){
+    body.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#777">لا يوجد عملاء حتى الآن</td></tr>';
+    return;
+  }
+
+  data.forEach(row=>{
+    const tr = document.createElement("tr");
+    const status = row.is_active
+      ? '<span class="badge active">فعال</span>'
+      : '<span class="badge inactive">متوقف</span>';
+
+    tr.innerHTML = `
+      <td>${escapeHtml(row.name_ar || row.name_tr || "")}</td>
+      <td>${escapeHtml(row.slug)}</td>
+      <td>${row.default_language === "tr" ? "Türkçe" : "العربية"}</td>
+      <td>${status}</td>
+      <td>
+        <button class="secondary" onclick="editCustomer('${row.id}')">تعديل</button>
+        <button class="${row.is_active ? "danger" : "ok"}" onclick="toggleCustomer('${row.id}', ${row.is_active})">
+          ${row.is_active ? "إيقاف" : "تفعيل"}
+        </button>
+      </td>
+    `;
+    body.appendChild(tr);
+  });
+}
+
+function escapeHtml(value){
+  return String(value).replace(/[&<>"']/g,m=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",
+    '"':"&quot;","'":"&#039;"
+  }[m]));
+}
+
+async function editCustomer(id){
+  const {data,error} = await client.from("customers").select("*").eq("id",id).single();
+  if(error){
+    showMsg("appMsg","تعذر فتح العميل: " + error.message);
+    return;
+  }
+
+  editingId = id;
+  $("editorTitle").textContent = "تعديل العميل";
+
+  Object.keys({
+    name_ar:1,name_tr:1,slug:1,bio_ar:1,bio_tr:1,whatsapp:1,
+    instagram:1,tiktok:1,facebook:1,maps:1,whatsapp_channel:1,
+    phone:1,photo_url:1
+  }).forEach(key=>$(key).value = data[key] || "");
+
+  $("default_language").value = data.default_language || "ar";
+  $("editorCard").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+async function toggleCustomer(id,current){
+  const {error} = await client
+    .from("customers")
+    .update({is_active:!current,updated_at:new Date().toISOString()})
+    .eq("id",id);
+
+  if(error){
+    showMsg("appMsg","تعذر تغيير الحالة: " + error.message);
+    return;
+  }
+  showMsg("appMsg", current ? "تم إيقاف العميل" : "تم تفعيل العميل", true);
+  await loadCustomers();
+}
+
+$("loginBtn").addEventListener("click", async ()=>{
+  clearMsg("loginMsg");
+  const email = $("email").value.trim();
+  const password = $("password").value;
+
+  if(!email || !password){
+    showMsg("loginMsg","أدخل البريد وكلمة المرور.");
+    return;
+  }
+
+  if(SUPABASE_ANON_KEY.includes("PUT_YOUR_")){
+    showMsg("loginMsg","باقي خطوة واحدة قبل التشغيل: ضع Publishable/anon public key داخل الكود مكان النص المحدد.");
+    return;
+  }
+
+  const {error} = await client.auth.signInWithPassword({email,password});
+  if(error){
+    showMsg("loginMsg","فشل تسجيل الدخول: " + error.message);
+    return;
+  }
+
+  await requireSession();
+});
+
+$("logoutBtn").addEventListener("click", async ()=>{
+  await client.auth.signOut();
+  clearForm();
+  await requireSession();
+});
+
+$("newBtn").addEventListener("click", ()=>{
+  clearForm();
+  $("editorCard").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+});
+
+$("cancelBtn").addEventListener("click", ()=>{
+  $("editorCard").classList.add("hidden");
+  clearForm();
+});
+
+$("refreshBtn").addEventListener("click", loadCustomers);
+
+$("saveBtn").addEventListener("click", async ()=>{
+  clearMsg("appMsg");
+  const payload = formData();
+
+  if(!payload.name_ar || !payload.slug){
+    showMsg("appMsg","الاسم العربي و الـ slug مطلوبان.");
+    return;
+  }
+
+  let result;
+  if(editingId){
+    result = await client
+      .from("customers")
+      .update({...payload,updated_at:new Date().toISOString()})
+      .eq("id",editingId);
+  }else{
+    result = await client.from("customers").insert(payload);
+  }
+
+  if(result.error){
+    showMsg("appMsg","تعذر الحفظ: " + result.error.message);
+    return;
+  }
+
+  showMsg("appMsg", editingId ? "تم تعديل العميل بنجاح" : "تمت إضافة العميل بنجاح", true);
+  $("editorCard").classList.add("hidden");
+  clearForm();
+  await loadCustomers();
+});
+
+requireSession();
+</script>
+</body>
+</html>
