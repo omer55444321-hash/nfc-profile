@@ -426,6 +426,7 @@ function renderCustomers(){
           ${row.is_active ? "إيقاف" : "تفعيل"}
         </button>
         <button class="danger" onclick="deleteCustomer('${row.id}')">حذف</button>
+        <button class="secondary" onclick="openCustomerPage('${row.slug}')">رابط صفحة</button>
       </td>
     `;
     body.appendChild(tr);
@@ -538,6 +539,12 @@ async function deleteCustomer(id){
   }catch(error){
     showMsg("appMsg","تعذر حذف العميل: " + error.message);
   }
+}
+
+
+function openCustomerPage(slug){
+  const url = buildSiteLink(slug);
+  window.open(url, "_blank", "noopener");
 }
 
 async function toggleCustomer(id,current){
