@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,239 +7,262 @@
 <title>أونلاين للهدايا | Online Gifts</title>
 
 <meta name="description"
-content="أونلاين للهدايا - عالم الهدايا المطبوعة والمخصصة وطباعة 3D في تركيا">
+content="أونلاين للهدايا - عالم الهدايا المطبوعة والمخصصة والهدايا المميزة في تركيا">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap"
-rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
-body {
-    font-family: "Cairo", sans-serif;
-    background: #080808;
-    color: #ffffff;
-    min-height: 100vh;
+body{
+    font-family:"Cairo",sans-serif;
+    background:#080808;
+    color:#fff;
+    min-height:100vh;
 }
 
-.page {
-    width: 100%;
-    max-width: 760px;
-    margin: auto;
-    padding: 20px 16px 40px;
+.page{
+    width:100%;
+    max-width:720px;
+    margin:auto;
+    padding:28px 18px 35px;
 }
 
-/* الذهب */
+/* =========================
+   LOGO
+========================= */
 
-:root {
-    --gold: #d4af37;
-    --gold-light: #f5d778;
-    --gold-dark: #9c7620;
+.logo-area{
+    text-align:center;
+    margin-bottom:18px;
 }
 
-/* رأس الصفحة */
-
-.hero {
-    text-align: center;
-    padding-top: 10px;
-}
-
-/* الشعار */
-
-.logo {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 3px solid var(--gold);
+.logo{
+    width:155px;
+    height:155px;
+    object-fit:contain;
+    border-radius:50%;
+    border:2px solid #c9a227;
+    padding:4px;
+    background:#000;
     box-shadow:
-        0 0 20px rgba(212,175,55,.25),
-        0 0 45px rgba(212,175,55,.08);
-    margin-bottom: 12px;
+        0 0 20px rgba(201,162,39,.25),
+        0 0 45px rgba(201,162,39,.08);
 }
 
-/* الاسم */
-
-h1 {
-    font-size: 32px;
-    font-weight: 800;
-    color: var(--gold-light);
-    letter-spacing: 1px;
-    text-shadow: 0 2px 10px rgba(212,175,55,.18);
+.brand-name{
+    margin-top:14px;
+    font-size:30px;
+    font-weight:800;
+    color:#d4af37;
+    letter-spacing:-1px;
 }
 
-.subtitle {
-    color: #d8d8d8;
-    font-size: 15px;
-    margin-top: 5px;
+.brand-en{
+    margin-top:2px;
+    color:#c9a227;
+    font-size:13px;
+    font-weight:600;
 }
 
-.bio {
-    color: #bdbdbd;
-    font-size: 14px;
-    margin-top: 10px;
+.description{
+    margin-top:10px;
+    color:#aaa;
+    font-size:12px;
 }
 
-/* الخط */
+/* =========================
+   GOLD LINE
+========================= */
 
-.gold-line {
-    width: 120px;
-    height: 2px;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        var(--gold),
-        transparent
-    );
-    margin: 18px auto;
+.gold-line{
+    width:75px;
+    height:1px;
+    background:#c9a227;
+    margin:15px auto 18px;
+    opacity:.8;
 }
 
-/* الأزرار */
+/* =========================
+   BUTTONS
+========================= */
 
-.buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 20px;
+.buttons{
+    display:flex;
+    flex-direction:column;
+    gap:9px;
 }
 
-.btn {
-    width: 100%;
-    min-height: 58px;
-    border: 1px solid rgba(212,175,55,.65);
-    border-radius: 15px;
-    background: linear-gradient(
+.btn{
+    width:100%;
+    min-height:55px;
+    border-radius:13px;
+    border:1px solid #b99520;
+    background:linear-gradient(
         135deg,
-        #171717,
+        #151515,
         #0d0d0d
     );
-    color: #fff;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    font-size: 17px;
-    font-weight: 700;
-    transition: .2s ease;
-    box-shadow: 0 5px 18px rgba(0,0,0,.35);
+    color:#fff;
+    text-decoration:none;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+
+    font-size:15px;
+    font-weight:700;
+
+    transition:.2s ease;
+
+    box-shadow:
+        0 4px 15px rgba(0,0,0,.35);
 }
 
-.btn:hover {
-    transform: translateY(-2px);
-    border-color: var(--gold-light);
-    box-shadow: 0 8px 25px rgba(212,175,55,.15);
+.btn:hover{
+    transform:translateY(-2px);
+    border-color:#e0bd45;
+    box-shadow:
+        0 6px 20px rgba(201,162,39,.15);
 }
 
-.icon {
-    font-size: 23px;
-}
-
-/* زر إضافة جهة الاتصال */
-
-.contact-btn {
-    background: linear-gradient(
+.btn-main{
+    background:linear-gradient(
         135deg,
-        #d4af37,
-        #a77c1c
+        #d7b43a,
+        #a98217
     );
-    color: #080808;
-    border: none;
-    font-size: 18px;
-    box-shadow: 0 8px 25px rgba(212,175,55,.20);
+
+    color:#080808;
+    border:none;
+    font-weight:800;
 }
 
-.contact-btn:hover {
-    color: #000;
-    box-shadow: 0 10px 30px rgba(212,175,55,.30);
+.btn-main:hover{
+    background:linear-gradient(
+        135deg,
+        #e4c34d,
+        #b58c1c
+    );
 }
 
-/* الأعمال */
-
-.works-title {
-    text-align: center;
-    margin: 32px 0 15px;
-    color: var(--gold-light);
-    font-size: 21px;
-    font-weight: 800;
+.icon{
+    font-size:20px;
+    line-height:1;
 }
 
-.works {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+/* =========================
+   WORK SECTION
+========================= */
+
+.work-section{
+    margin-top:25px;
 }
 
-.work {
-    background: #111;
-    border: 1px solid #2b2b2b;
-    border-radius: 10px;
-    overflow: hidden;
+.section-title{
+    text-align:center;
+    color:#d4af37;
+    font-size:20px;
+    font-weight:800;
+    margin-bottom:14px;
 }
 
-.work img {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    display: block;
+.works{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:7px;
 }
 
-.work-title {
-    text-align: center;
-    padding: 6px 3px;
-    font-size: 10px;
-    color: #d6d6d6;
+.work{
+    background:#111;
+    border:1px solid #292929;
+    border-radius:9px;
+    overflow:hidden;
+    position:relative;
+    aspect-ratio:1/1;
 }
 
-/* الفوتر */
-
-.footer {
-    text-align: center;
-    margin-top: 30px;
-    color: #777;
-    font-size: 12px;
+.work img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
 }
 
-.footer strong {
-    color: var(--gold);
+.work-title{
+    position:absolute;
+    bottom:0;
+    right:0;
+    left:0;
+
+    padding:7px 4px;
+
+    text-align:center;
+
+    background:linear-gradient(
+        transparent,
+        rgba(0,0,0,.9)
+    );
+
+    color:#fff;
+    font-size:10px;
+    font-weight:600;
 }
 
-/* موبايل */
+/* =========================
+   FOOTER
+========================= */
 
-@media (max-width: 500px) {
+.footer{
+    text-align:center;
+    margin-top:24px;
+    color:#777;
+    font-size:10px;
+}
 
-    .page {
-        padding: 16px 12px 35px;
+.footer strong{
+    color:#d4af37;
+    font-size:12px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:500px){
+
+    .page{
+        padding:22px 14px 28px;
     }
 
-    .logo {
-        width: 135px;
-        height: 135px;
+    .logo{
+        width:135px;
+        height:135px;
     }
 
-    h1 {
-        font-size: 28px;
+    .brand-name{
+        font-size:27px;
     }
 
-    .btn {
-        min-height: 60px;
-        font-size: 16px;
+    .btn{
+        min-height:57px;
+        font-size:14px;
     }
 
-    .works {
-        gap: 6px;
+    .works{
+        gap:6px;
     }
 
-    .work-title {
-        font-size: 9px;
+    .work-title{
+        font-size:9px;
     }
 }
 
@@ -251,160 +273,216 @@ h1 {
 
 <main class="page">
 
-<section class="hero">
+    <!-- LOGO -->
 
-    <!-- صورة اللوغو -->
-    <img
-        class="logo"
-        src="profile.jpg"
-        alt="أونلاين للهدايا"
-        onerror="this.src='avatar-placeholder.svg'"
-    >
+    <section class="logo-area">
 
-    <h1>أونلاين للهدايا</h1>
+        <img
+            class="logo"
+            src="profile.jpg"
+            alt="أونلاين للهدايا"
+        >
 
-    <div class="subtitle">
-        Online Gifts
-    </div>
+        <h1 class="brand-name">
+            أونلاين للهدايا
+        </h1>
 
-    <p class="bio">
-        عالم الهدايا المطبوعة والمخصصة والهدايا المميزة
-    </p>
+        <div class="brand-en">
+            Online Gifts
+        </div>
 
-    <div class="gold-line"></div>
+        <p class="description">
+            عالم الهدايا المطبوعة والمخصصة والهدايا المميزة
+        </p>
 
-</section>
+        <div class="gold-line"></div>
 
-
-<!-- الأزرار -->
-
-<section class="buttons">
-
-    <!-- إضافة إلى جهات الاتصال -->
-    <a
-        class="btn contact-btn"
-        href="contact.vcf"
-        download="Online-Gifts.vcf"
-    >
-        <span class="icon">👤</span>
-        إضافة لجهات الاتصال
-    </a>
+    </section>
 
 
-    <!-- واتساب -->
-    <a
-        class="btn"
-        href="https://wa.me/message/LR3NY7SMCEM3B1/"
-        target="_blank"
-    >
-        <span class="icon">💬</span>
-        واتساب
-    </a>
+    <!-- BUTTONS -->
+
+    <section class="buttons">
+
+        <!-- ADD CONTACT -->
+
+        <a
+            class="btn btn-main"
+            href="contact.vcf"
+            download="Online-Gifts.vcf"
+        >
+            <span class="icon">👤</span>
+            إضافة لجهات الاتصال
+        </a>
 
 
-    <!-- Instagram -->
-    <a
-        class="btn"
-        href="https://www.instagram.com/telef98/?hl=ar"
-        target="_blank"
-    >
-        <span class="icon">◎</span>
-        Instagram
-    </a>
+        <!-- WHATSAPP -->
+
+        <a
+            class="btn"
+            href="https://wa.me/message/LR3NY7SMCEM3B1/"
+            target="_blank"
+        >
+            <span class="icon">💬</span>
+            واتساب
+        </a>
 
 
-    <!-- TikTok -->
-    <a
-        class="btn"
-        href="https://www.tiktok.com/@on_gift"
-        target="_blank"
-    >
-        <span class="icon">♪</span>
-        TikTok
-    </a>
+        <!-- INSTAGRAM -->
+
+        <a
+            class="btn"
+            href="https://www.instagram.com/telef98/?hl=ar"
+            target="_blank"
+        >
+            <span class="icon">◎</span>
+            Instagram
+        </a>
 
 
-    <!-- Facebook -->
-    <a
-        class="btn"
-        href="https://www.facebook.com/onlayinn"
-        target="_blank"
-    >
-        <span class="icon">f</span>
-        Facebook
-    </a>
+        <!-- TIKTOK -->
+
+        <a
+            class="btn"
+            href="https://www.tiktok.com/@on_gift"
+            target="_blank"
+        >
+            <span class="icon">♪</span>
+            TikTok
+        </a>
 
 
-    <!-- Google Maps -->
-    <a
-        class="btn"
-        href="https://g.page/r/CRAfNQ9SrlvSEAE/review"
-        target="_blank"
-    >
-        <span class="icon">📍</span>
-        قيّمنا على Google Maps
-    </a>
+        <!-- FACEBOOK -->
+
+        <a
+            class="btn"
+            href="https://www.facebook.com/onlayinn"
+            target="_blank"
+        >
+            <span class="icon">f</span>
+            Facebook
+        </a>
 
 
-    <!-- قناة واتساب -->
-    <a
-        class="btn"
-        href="https://whatsapp.com/channel/0029VaaNlxi2UPBBkc38612Z"
-        target="_blank"
-    >
-        <span class="icon">📢</span>
-        قناتنا على واتساب
-    </a>
+        <!-- GOOGLE MAPS -->
+
+        <a
+            class="btn"
+            href="https://g.page/r/CRAfNQ9SrlvSEAE/review"
+            target="_blank"
+        >
+            <span class="icon">📍</span>
+            قيّمنا على Google Maps
+        </a>
 
 
-    <!-- الاتصال -->
-    <a
-        class="btn"
-        href="tel:+905349154274"
-    >
-        <span class="icon">📞</span>
-        اتصل بنا
-    </a>
+        <!-- WHATSAPP CHANNEL -->
 
-</section>
+        <a
+            class="btn"
+            href="https://whatsapp.com/channel/0029VaaNlxi2UPBBkc38612Z"
+            target="_blank"
+        >
+            <span class="icon">📢</span>
+            قناتنا على واتساب
+        </a>
 
-
-<!-- أعمالنا -->
-
-<h2 class="works-title">
-    من أعمالنا
-</h2>
-
-<section class="works">
-
-    <div class="work">
-        <img src="work-1.jpg" alt="هدايا مخصصة">
-        <div class="work-title">هدايا مخصصة</div>
-    </div>
-
-    <div class="work">
-        <img src="work-2.jpg" alt="طباعة">
-        <div class="work-title">طباعة</div>
-    </div>
-
-    <div class="work">
-        <img src="work-3.jpg" alt="طباعة 3D">
-        <div class="work-title">طباعة 3D</div>
-    </div>
-
-    <div class="work">
-        <img src="work-4.jpg" alt="هدايا">
-        <div class="work-title">هدايا</div>
-    </div>
-
-</section>
+    </section>
 
 
-<footer class="footer">
-    <strong>أونلاين للهدايا</strong>
-    <br>
-    جميع الحقوق محفوظة
-</footer>
+    <!-- OUR WORK -->
+
+    <section class="work-section">
+
+        <h2 class="section-title">
+            من أعمالنا
+        </h2>
+
+        <div class="works">
+
+
+            <!-- CUSTOM GIFTS -->
+
+            <div class="work">
+
+                <img
+                    src="work-1.jpg"
+                    alt="هدايا مخصصة"
+                >
+
+                <div class="work-title">
+                    هدايا مخصصة
+                </div>
+
+            </div>
+
+
+            <!-- PRINTING -->
+
+            <div class="work">
+
+                <img
+                    src="work-2.jpg"
+                    alt="طباعة"
+                >
+
+                <div class="work-title">
+                    طباعة
+                </div>
+
+            </div>
+
+
+            <!-- 3D PRINTING -->
+
+            <div class="work">
+
+                <img
+                    src="work-3.jpg"
+                    alt="طباعة 3D"
+                >
+
+                <div class="work-title">
+                    طباعة 3D
+                </div>
+
+            </div>
+
+
+            <!-- GIFTS -->
+
+            <div class="work">
+
+                <img
+                    src="work-4.jpg"
+                    alt="هدايا"
+                >
+
+                <div class="work-title">
+                    هدايا
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer class="footer">
+
+        <strong>
+            أونلاين للهدايا
+        </strong>
+
+        <br>
+
+        جميع الحقوق محفوظة
+
+    </footer>
 
 </main>
 
