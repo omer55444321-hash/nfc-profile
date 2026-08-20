@@ -280,6 +280,21 @@
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     }, {once:true});
 
+    const workSlots = [
+      ["work-1.svg", customer.work_1_url],
+      ["work-2.svg", customer.work_2_url],
+      ["work-3.svg", customer.work_3_url],
+      ["work-4.svg", customer.work_4_url],
+      ["work-5.svg", customer.work_5_url],
+      ["work-6.svg", customer.work_6_url]
+    ];
+
+    document.querySelectorAll(".gallery .work").forEach((item, index) => {
+      const img = item.querySelector("img");
+      const src = workSlots[index]?.[1] || workSlots[index]?.[0];
+      if(img) img.src = src;
+    });
+
     setLanguage(customer.default_language === "tr" ? "tr" : "ar");
   }
 
