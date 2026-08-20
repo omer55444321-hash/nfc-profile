@@ -247,7 +247,8 @@
 
     const footerCredit = document.getElementById("footerCredit");
     if (footerCredit) {
-      footerCredit.innerHTML = `🎁 &nbsp; Powered by <strong>${escapeHtml(nameAr)}</strong>`;
+      footerCredit.innerHTML = "🎁 &nbsp; Powered by <strong></strong>";
+      footerCredit.querySelector("strong").textContent = nameAr;
     }
 
     document.getElementById("profileSubtitle").textContent = "Digital Profile";
