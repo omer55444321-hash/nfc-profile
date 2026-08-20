@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
@@ -25,15 +26,20 @@
       </div>
 
       <div class="profile">
-        <img class="avatar" src="online-gifts-logo.png" alt="أونلاين للهدايا">
+        <img class="avatar" id="profilePhoto" src="online-gifts-logo.png" alt="أونلاين للهدايا">
 
-        <h1 data-ar="أونلاين للهدايا" data-tr="Online Hediyeler">أونلاين للهدايا</h1>
+        <h1 id="profileName"
+            data-ar="أونلاين للهدايا"
+            data-tr="Online Hediyeler">أونلاين للهدايا</h1>
 
         <div class="subtitle">
-          <span>◆</span> Online Gifts <span>◆</span>
+          <span>◆</span> <span id="profileSubtitle">Online Gifts</span> <span>◆</span>
         </div>
 
-        <p class="bio" data-ar="عالم الهدايا المطبوعة والمخصصة والهدايا المميزة" data-tr="Kişiye özel ve baskılı hediyeler dünyası">
+        <p class="bio"
+           id="profileBio"
+           data-ar="عالم الهدايا المطبوعة والمخصصة والهدايا المميزة"
+           data-tr="Kişiye özel ve baskılı hediyeler dünyası">
           عالم الهدايا المطبوعة والمخصصة والهدايا المميزة
         </p>
 
@@ -44,16 +50,18 @@
     <section class="content">
       <div class="links">
 
-        <a class="link contact" href="contact.vcf" download="Online-Gifts.vcf">
+        <a class="link contact" id="contactLink" href="contact.vcf" download="Online-Gifts.vcf">
           <span class="icon">👤</span>
           <span class="link-text">
             <b data-ar="إضافة لجهات الاتصال" data-tr="Kişilere Ekle">إضافة لجهات الاتصال</b>
-            <small data-ar="احفظ بيانات أونلاين للهدايا" data-tr="Online Gifts iletişim bilgilerini kaydet">احفظ بيانات أونلاين للهدايا</small>
+            <small id="contactSub"
+                   data-ar="احفظ بيانات أونلاين للهدايا"
+                   data-tr="Online Gifts iletişim bilgilerini kaydet">احفظ بيانات أونلاين للهدايا</small>
           </span>
           <span class="arrow">‹</span>
         </a>
 
-        <a class="link whatsapp" href="https://wa.me/message/LR3NY7SMCEM3B1/" target="_blank" rel="noopener">
+        <a class="link whatsapp" id="whatsappLink" href="https://wa.me/message/LR3NY7SMCEM3B1/" target="_blank" rel="noopener">
           <span class="icon">◔</span>
           <span class="link-text">
             <b data-ar="واتساب" data-tr="WhatsApp">واتساب</b>
@@ -62,7 +70,7 @@
           <span class="arrow">‹</span>
         </a>
 
-        <a class="link instagram" href="https://www.instagram.com/telef98/?hl=ar" target="_blank" rel="noopener">
+        <a class="link instagram" id="instagramLink" href="https://www.instagram.com/telef98/?hl=ar" target="_blank" rel="noopener">
           <span class="icon">◎</span>
           <span class="link-text">
             <b>Instagram</b>
@@ -71,7 +79,7 @@
           <span class="arrow">‹</span>
         </a>
 
-        <a class="link tiktok" href="https://www.tiktok.com/@on_gift" target="_blank" rel="noopener">
+        <a class="link tiktok" id="tiktokLink" href="https://www.tiktok.com/@on_gift" target="_blank" rel="noopener">
           <span class="icon">♪</span>
           <span class="link-text">
             <b>TikTok</b>
@@ -80,7 +88,7 @@
           <span class="arrow">‹</span>
         </a>
 
-        <a class="link facebook" href="https://www.facebook.com/onlayinn" target="_blank" rel="noopener">
+        <a class="link facebook" id="facebookLink" href="https://www.facebook.com/onlayinn" target="_blank" rel="noopener">
           <span class="icon">f</span>
           <span class="link-text">
             <b>Facebook</b>
@@ -89,7 +97,7 @@
           <span class="arrow">‹</span>
         </a>
 
-        <a class="link maps" href="https://g.page/r/CRAfNQ9SrlvSEAE/review" target="_blank" rel="noopener">
+        <a class="link maps" id="mapsLink" href="https://g.page/r/CRAfNQ9SrlvSEAE/review" target="_blank" rel="noopener">
           <span class="icon">📍</span>
           <span class="link-text">
             <b data-ar="Google Maps" data-tr="Google Maps">Google Maps</b>
@@ -98,7 +106,7 @@
           <span class="arrow">‹</span>
         </a>
 
-        <a class="link channel" href="https://whatsapp.com/channel/0029VaaNlxi2UPBBkc38612Z" target="_blank" rel="noopener">
+        <a class="link channel" id="channelLink" href="https://whatsapp.com/channel/0029VaaNlxi2UPBBkc38612Z" target="_blank" rel="noopener">
           <span class="icon">◉</span>
           <span class="link-text">
             <b data-ar="قناتنا على واتساب" data-tr="WhatsApp Kanalımız">قناتنا على واتساب</b>
@@ -128,18 +136,39 @@
     <footer>
       <div>🎁 &nbsp; Powered by <strong>Online Gifts</strong></div>
       <div class="footer-icons">
-        <a href="https://wa.me/message/LR3NY7SMCEM3B1/" aria-label="WhatsApp">◔</a>
-        <a href="https://www.instagram.com/telef98/?hl=ar" aria-label="Instagram">◎</a>
-        <a href="https://www.tiktok.com/@on_gift" aria-label="TikTok">♪</a>
-        <a href="https://www.facebook.com/onlayinn" aria-label="Facebook">f</a>
-        <a href="https://whatsapp.com/channel/0029VaaNlxi2UPBBkc38612Z" aria-label="WhatsApp Channel">◉</a>
+        <a id="footerWhatsapp" href="https://wa.me/message/LR3NY7SMCEM3B1/" aria-label="WhatsApp">◔</a>
+        <a id="footerInstagram" href="https://www.instagram.com/telef98/?hl=ar" aria-label="Instagram">◎</a>
+        <a id="footerTiktok" href="https://www.tiktok.com/@on_gift" aria-label="TikTok">♪</a>
+        <a id="footerFacebook" href="https://www.facebook.com/onlayinn" aria-label="Facebook">f</a>
+        <a id="footerChannel" href="https://whatsapp.com/channel/0029VaaNlxi2UPBBkc38612Z" aria-label="WhatsApp Channel">◉</a>
       </div>
     </footer>
 
   </main>
 
 <script>
-(function () {
+(() => {
+  const SUPABASE_URL = "https://ktlqactpljbnuwqukgiy.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_gQ0MHHnO15LjmWZijTV5Tw_0EbaynCE";
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const links = {
+    whatsapp: document.getElementById("whatsappLink"),
+    instagram: document.getElementById("instagramLink"),
+    tiktok: document.getElementById("tiktokLink"),
+    facebook: document.getElementById("facebookLink"),
+    maps: document.getElementById("mapsLink"),
+    channel: document.getElementById("channelLink")
+  };
+
+  const footer = {
+    whatsapp: document.getElementById("footerWhatsapp"),
+    instagram: document.getElementById("footerInstagram"),
+    tiktok: document.getElementById("footerTiktok"),
+    facebook: document.getElementById("footerFacebook"),
+    channel: document.getElementById("footerChannel")
+  };
+
   const buttons = document.querySelectorAll(".lang-btn");
   const translatable = document.querySelectorAll("[data-ar][data-tr]");
 
@@ -159,12 +188,129 @@
     localStorage.setItem("onlineGiftsLanguage", lang);
   }
 
+  function setLink(el, value) {
+    if (!el) return;
+    const clean = (value || "").trim();
+    el.href = clean || "#";
+    if (!clean) {
+      el.removeAttribute("target");
+      el.removeAttribute("rel");
+    }
+  }
+
+  function slugFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const querySlug = (params.get("client") || params.get("slug") || "").trim().toLowerCase();
+    if (querySlug) return querySlug;
+
+    // Supports a future /nfc-profile/<slug>/ path when a fallback page is added.
+    const parts = window.location.pathname.split("/").filter(Boolean);
+    const projectIndex = parts.indexOf("nfc-profile");
+    if (projectIndex >= 0 && parts[projectIndex + 1]) {
+      return decodeURIComponent(parts[projectIndex + 1]).toLowerCase();
+    }
+    return "";
+  }
+
+  function applyCustomer(customer) {
+    const nameAr = customer.name_ar || "أونلاين للهدايا";
+    const nameTr = customer.name_tr || nameAr;
+    const bioAr = customer.bio_ar || "أهلاً بكم في صفحتي الرقمية";
+    const bioTr = customer.bio_tr || bioAr;
+
+    const profileName = document.getElementById("profileName");
+    const profileBio = document.getElementById("profileBio");
+
+    profileName.dataset.ar = nameAr;
+    profileName.dataset.tr = nameTr;
+    profileName.textContent = nameAr;
+
+    profileBio.dataset.ar = bioAr;
+    profileBio.dataset.tr = bioTr;
+    profileBio.textContent = bioAr;
+
+    document.getElementById("profileSubtitle").textContent = "Digital Profile";
+    document.getElementById("profilePhoto").src = customer.photo_url || "online-gifts-logo.png";
+    document.getElementById("profilePhoto").alt = nameAr;
+
+    document.getElementById("contactSub").dataset.ar =
+      `احفظ بيانات ${nameAr}`;
+    document.getElementById("contactSub").dataset.tr =
+      `Kişilerinizde ${nameTr} bilgilerini kaydedin`;
+
+    setLink(links.whatsapp, customer.whatsapp);
+    setLink(links.instagram, customer.instagram);
+    setLink(links.tiktok, customer.tiktok);
+    setLink(links.facebook, customer.facebook);
+    setLink(links.maps, customer.maps);
+    setLink(links.channel, customer.whatsapp_channel);
+
+    setLink(footer.whatsapp, customer.whatsapp);
+    setLink(footer.instagram, customer.instagram);
+    setLink(footer.tiktok, customer.tiktok);
+    setLink(footer.facebook, customer.facebook);
+    setLink(footer.channel, customer.whatsapp_channel);
+
+    const contactLink = document.getElementById("contactLink");
+    contactLink.removeAttribute("download");
+    contactLink.href = "#";
+    contactLink.addEventListener("click", (event) => {
+      event.preventDefault();
+
+      const vcard = [
+        "BEGIN:VCARD",
+        "VERSION:3.0",
+        `FN:${nameAr}`,
+        `ORG:${nameAr}`,
+        customer.phone ? `TEL;TYPE=CELL:${customer.phone}` : "",
+        customer.whatsapp ? `URL:${customer.whatsapp}` : "",
+        customer.instagram ? `URL:${customer.instagram}` : "",
+        customer.facebook ? `URL:${customer.facebook}` : "",
+        "END:VCARD"
+      ].filter(Boolean).join("\n");
+
+      const blob = new Blob([vcard], {type:"text/vcard;charset=utf-8"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${nameAr.replace(/\s+/g,"-")}.vcf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }, {once:true});
+
+    setLanguage(customer.default_language === "tr" ? "tr" : "ar");
+  }
+
+  async function loadCustomer() {
+    const slug = slugFromUrl();
+    if (!slug) {
+      setLanguage(localStorage.getItem("onlineGiftsLanguage") || "ar");
+      return;
+    }
+
+    const {data, error} = await supabaseClient
+      .from("customers")
+      .select("*")
+      .eq("slug", slug)
+      .eq("is_active", true)
+      .single();
+
+    if (error || !data) {
+      console.error("Customer load failed:", error || "Customer not found");
+      setLanguage(localStorage.getItem("onlineGiftsLanguage") || "ar");
+      return;
+    }
+
+    applyCustomer(data);
+  }
+
   buttons.forEach((btn) => {
     btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
   });
 
-  // العربية هي الصفحة الافتراضية مهما كانت لغة المتصفح.
-  setLanguage(localStorage.getItem("onlineGiftsLanguage") || "ar");
+  loadCustomer();
 })();
 </script>
 
