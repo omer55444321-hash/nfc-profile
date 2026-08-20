@@ -134,7 +134,7 @@
     </section>
 
     <footer>
-      <div>🎁 &nbsp; Powered by <strong>Online Gifts</strong></div>
+      <div id="footerCredit">🎁 &nbsp; Powered by <strong>Online Gifts</strong></div>
       <div class="footer-icons">
         <a id="footerWhatsapp" href="https://wa.me/message/LR3NY7SMCEM3B1/" aria-label="WhatsApp">◔</a>
         <a id="footerInstagram" href="https://www.instagram.com/telef98/?hl=ar" aria-label="Instagram">◎</a>
@@ -244,6 +244,11 @@
     profileBio.dataset.ar = bioAr;
     profileBio.dataset.tr = bioTr;
     profileBio.textContent = bioAr;
+
+    const footerCredit = document.getElementById("footerCredit");
+    if (footerCredit) {
+      footerCredit.innerHTML = `🎁 &nbsp; Powered by <strong>${escapeHtml(nameAr)}</strong>`;
+    }
 
     document.getElementById("profileSubtitle").textContent = "Digital Profile";
     const profilePhoto = document.getElementById("profilePhoto");
