@@ -462,10 +462,13 @@ async function editCustomer(id){
   window.scrollTo({top:0,behavior:"smooth"});
 
   Object.keys({
-    name_ar:1,name_tr:1,slug:1,bio_ar:1,bio_tr:1,whatsapp:1,
+    name_ar:1,name_tr:1,bio_ar:1,bio_tr:1,whatsapp:1,
     instagram:1,tiktok:1,facebook:1,maps:1,whatsapp_channel:1,
     phone:1,photo_url:1
-  }).forEach(key=>$(key).value = data[key] || "");
+  }).forEach(key=>{
+    const field = $(key);
+    if(field) field.value = data[key] || "";
+  });
 
   $("photo_preview").innerHTML = data.photo_url ? `<img class="file-preview" src="${escapeHtml(data.photo_url)}" alt="">` : "";
 
