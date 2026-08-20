@@ -116,21 +116,6 @@
         </a>
 
       </div>
-
-      <section class="portfolio">
-        <div class="section-title">
-          <span></span><h2 data-ar="أعمالنا" data-tr="Çalışmalarımız">أعمالنا</h2><span></span>
-        </div>
-
-        <div class="gallery">
-          <div class="work"><img src="work-1.svg" alt="بكجات هدايا"><span data-ar="بكجات هدايا" data-tr="Hediye Setleri">بكجات هدايا</span></div>
-          <div class="work"><img src="work-2.svg" alt="ميداليات مفاتيح"><span data-ar="ميداليات مفاتيح" data-tr="Anahtarlıklar">ميداليات مفاتيح</span></div>
-          <div class="work"><img src="work-3.svg" alt="طباعة 3D"><span data-ar="طباعة 3D" data-tr="3D Baskı">طباعة 3D</span></div>
-          <div class="work"><img src="work-4.svg" alt="أباجورات مضيئة"><span data-ar="أباجورات مضيئة" data-tr="Işıklı Lambalar">أباجورات مضيئة</span></div>
-          <div class="work"><img src="work-5.svg" alt="ساعات حائط"><span data-ar="ساعات حائط" data-tr="Duvar Saatleri">ساعات حائط</span></div>
-          <div class="work"><img src="work-6.svg" alt="طباعة مخصصة"><span data-ar="طباعة مخصصة" data-tr="Özel Baskı">طباعة مخصصة</span></div>
-        </div>
-      </section>
     </section>
 
     <footer>
@@ -279,21 +264,6 @@
       a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     }, {once:true});
-
-    const workSlots = [
-      ["work-1.svg", customer.work_1_url],
-      ["work-2.svg", customer.work_2_url],
-      ["work-3.svg", customer.work_3_url],
-      ["work-4.svg", customer.work_4_url],
-      ["work-5.svg", customer.work_5_url],
-      ["work-6.svg", customer.work_6_url]
-    ];
-
-    document.querySelectorAll(".gallery .work").forEach((item, index) => {
-      const img = item.querySelector("img");
-      const src = workSlots[index]?.[1] || workSlots[index]?.[0];
-      if(img) img.src = src;
-    });
 
     setLanguage(customer.default_language === "tr" ? "tr" : "ar");
   }
