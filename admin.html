@@ -405,6 +405,7 @@ async function loadCustomers(){
         <button class="${row.is_active ? "danger" : "ok"}" onclick="toggleCustomer('${row.id}', ${row.is_active})">
           ${row.is_active ? "إيقاف" : "تفعيل"}
         </button>
+        <button class="danger" onclick="deleteCustomer('${row.id}')">حذف</button>
       </td>
     `;
     body.appendChild(tr);
@@ -451,6 +452,71 @@ async function editCustomer(id){
 
   $("editorCard").classList.remove("hidden");
   window.scrollTo({top:0,behavior:"smooth"});
+}
+
+
+async function removeFolderFiles(folder){
+  if(!folder) return;
+
+  const {data, error} = await client.storage
+    .from("customer-images")
+    .list(folder, {limit:100});
+
+  if(error) throw error;
+
+  const paths = (data || [])
+    .filter(item => item && item.name)
+    .map(item => `${folder}/${item.name}`);
+
+  if(paths.length){
+    const {error:removeError} = await client.storage
+      .from("customer-images")
+      .remove(paths);
+    if(removeError) throw removeError;
+  }
+}
+
+async function deleteCustomer(id){
+  const ok = window.confirm(
+    "هل أنت متأكد من حذف هذا العميل نهائيًا؟\\n\\nسيتم حذف بياناته وصورته ورابط التعبئة ولا يمكن التراجع."
+  );
+  if(!ok) return;
+
+  clearMsg("appMsg");
+
+  try{
+    const {data:customer,error:readError} = await client
+      .from("customers")
+      .select("id,slug,fill_token")
+      .eq("id",id)
+      .single();
+
+    if(readError) throw readError;
+
+    // Remove profile files uploaded by the admin (folder = slug)
+    // and profile files uploaded through the customer's one-time form (folder = fill_token).
+    await removeFolderFiles(customer.slug);
+    if(customer.fill_token && customer.fill_token !== customer.slug){
+      await removeFolderFiles(customer.fill_token);
+    }
+
+    const {error:deleteError} = await client
+      .from("customers")
+      .delete()
+      .eq("id",id);
+
+    if(deleteError) throw deleteError;
+
+    if(editingId === id){
+      clearForm();
+      $("editorCard").classList.add("hidden");
+    }
+
+    showMsg("appMsg","تم حذف العميل وكل ملفاته بنجاح.", true);
+    await loadCustomers();
+  }catch(error){
+    showMsg("appMsg","تعذر حذف العميل: " + error.message);
+  }
 }
 
 async function toggleCustomer(id,current){
@@ -561,7 +627,7 @@ $("newFillLinkBtn").addEventListener("click", async ()=>{
     return;
   }
 
-  const url = `${window.location.origin}${window.location.pathname.replace(/admin\\.html$/,"")}fill.html?token=${encodeURIComponent(data.fill_token)}`;
+  const url = `${window.location.origin}${window.location.pathname.replace(/admin\.html$/,"")}fill.html?token=${encodeURIComponent(data.fill_token)}`;
   $("fillLink").value = url;
   $("fillLinkBox").classList.remove("hidden");
   $("fillStatus").textContent = `تم إنشاء رابط جديد وينتهي في ${new Date(data.fill_expires_at).toLocaleString("ar-TR")}`;
