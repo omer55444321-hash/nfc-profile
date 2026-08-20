@@ -83,6 +83,17 @@ th{background:#faf8f0}
         <button class="primary" id="newBtn">+ إضافة عميل</button>
         <button class="secondary" id="refreshBtn">تحديث</button>
       </div>
+      <div class="card" style="margin-top:14px;background:#fffaf0">
+        <div class="topbar">
+          <div>
+            <h2 style="margin:0">حالة صفحات العملاء</h2>
+            <div class="muted">إيقاف/تشغيل جميع صفحات العملاء دفعة واحدة عند حدوث مشكلة.</div>
+          </div>
+          <button class="secondary" id="globalPagesToggle" type="button">جارٍ التحقق...</button>
+        </div>
+        <div id="globalSwitchMsg" class="msg"></div>
+      </div>
+
       <div id="appMsg" class="msg"></div>
     </div>
 
@@ -255,7 +266,6 @@ function clearMsg(id){
   el.classList.remove("show");
 }
 
-
 function buildSiteLink(slug){
   const base = window.location.origin + window.location.pathname.replace(/admin\.html$/,"");
   return `${base}?client=${encodeURIComponent(slug)}`;
@@ -360,6 +370,68 @@ function formData(){
   };
 }
 
+
+async function getCustomerPagesEnabled(){
+  const {data,error} = await client
+    .from("site_settings")
+    .select("value_text")
+    .eq("key","customer_pages_enabled")
+    .maybeSingle();
+
+  if(error) throw error;
+  return data?.value_text !== "false";
+}
+
+async function renderGlobalSwitch(){
+  const btn = $("globalPagesToggle");
+  try{
+    const enabled = await getCustomerPagesEnabled();
+    btn.textContent = enabled ? "إيقاف صفحات العملاء" : "تشغيل صفحات العملاء";
+    btn.className = enabled ? "danger" : "ok";
+    btn.dataset.enabled = enabled ? "true" : "false";
+  }catch(error){
+    btn.textContent = "تعذر التحقق";
+    btn.className = "secondary";
+    showMsg("globalSwitchMsg","تعذر قراءة حالة الصفحات: " + error.message);
+  }
+}
+
+$("globalPagesToggle").addEventListener("click", async ()=>{
+  const button = $("globalPagesToggle");
+  const current = button.dataset.enabled === "true";
+  const nextValue = current ? "false" : "true";
+
+  const ok = window.confirm(
+    current
+      ? "هل تريد إيقاف جميع صفحات العملاء مؤقتًا؟"
+      : "هل تريد إعادة تشغيل جميع صفحات العملاء؟"
+  );
+  if(!ok) return;
+
+  const {error} = await client
+    .from("site_settings")
+    .update({
+      value_text: nextValue,
+      updated_at: new Date().toISOString()
+    })
+    .eq("key","customer_pages_enabled");
+
+  if(error){
+    showMsg("globalSwitchMsg","تعذر تغيير الحالة: " + error.message);
+    return;
+  }
+
+  showMsg(
+    "globalSwitchMsg",
+    nextValue === "true"
+      ? "تم تشغيل جميع صفحات العملاء."
+      : "تم إيقاف جميع صفحات العملاء مؤقتًا.",
+    true
+  );
+
+  await renderGlobalSwitch();
+});
+
 async function requireSession(){
   const {data:{session}} = await client.auth.getSession();
   if(session){
@@ -367,6 +439,7 @@ async function requireSession(){
     $("app").classList.remove("hidden");
     $("whoami").textContent = "مسجل الدخول: " + (session.user.email || "");
     await loadCustomers();
+    await renderGlobalSwitch();
   }else{
     $("loginCard").classList.remove("hidden");
     $("app").classList.add("hidden");
