@@ -201,7 +201,10 @@ th{background:#faf8f0}
     </section>
 
     <section class="card">
-      <h2>العملاء</h2>
+      <div class="topbar">
+        <h2>العملاء</h2>
+        <input id="customerSearch" type="search" placeholder="ابحث باسم العميل..." style="max-width:320px">
+      </div>
       <div class="tablewrap">
         <table>
           <thead>
@@ -234,6 +237,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_gQ0MHHnO15LjmWZijTV5Tw_0EbaynCE";
 const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let editingId = null;
+let customersCache = [];
 
 const $ = (id) => document.getElementById(id);
 
@@ -370,6 +374,7 @@ async function requireSession(){
 
 async function loadCustomers(){
   clearMsg("appMsg");
+
   const {data, error} = await client
     .from("customers")
     .select("id,slug,name_ar,name_tr,default_language,is_active,fill_token,fill_used,fill_expires_at")
@@ -380,15 +385,30 @@ async function loadCustomers(){
     return;
   }
 
+  customersCache = data || [];
+  renderCustomers();
+}
+
+function renderCustomers(){
+  const query = ($("customerSearch")?.value || "").trim().toLowerCase();
+
+  const filtered = customersCache.filter(row => {
+    const ar = (row.name_ar || "").toLowerCase();
+    const tr = (row.name_tr || "").toLowerCase();
+    return !query || ar.includes(query) || tr.includes(query);
+  });
+
   const body = $("customersBody");
   body.innerHTML = "";
 
-  if(!data.length){
-    body.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#777">لا يوجد عملاء حتى الآن</td></tr>';
+  if(!filtered.length){
+    body.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#777">${
+      query ? "لا توجد نتائج مطابقة" : "لا يوجد عملاء حتى الآن"
+    }</td></tr>`;
     return;
   }
 
-  data.forEach(row=>{
+  filtered.forEach(row=>{
     const tr = document.createElement("tr");
     const status = row.is_active
       ? '<span class="badge active">فعال</span>'
@@ -398,6 +418,7 @@ async function loadCustomers(){
       <td>${escapeHtml(row.name_ar || row.name_tr || "")}</td>
       <td>${escapeHtml(row.slug)}</td>
       <td>${row.default_language === "tr" ? "Türkçe" : "العربية"}</td>
+      <td>${status}</td>
       <td>${row.fill_used ? '<span class="badge active">تم الاستلام</span>' : (row.fill_token ? '<span class="badge inactive">بانتظار العميل</span>' : '<span class="badge inactive">غير منشأ</span>')}</td>
       <td>
         <button class="secondary" onclick="editCustomer('${row.id}')">تعديل</button>
@@ -410,6 +431,7 @@ async function loadCustomers(){
     body.appendChild(tr);
   });
 }
+
 
 function escapeHtml(value){
   return String(value).replace(/[&<>"']/g,m=>({
@@ -574,6 +596,8 @@ $("cancelBtn").addEventListener("click", ()=>{
 });
 
 $("refreshBtn").addEventListener("click", loadCustomers);
+
+$("customerSearch").addEventListener("input", renderCustomers);
 
 
 $("copySiteLinkBtn").addEventListener("click", async ()=>{
