@@ -1,77 +1,412 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>عمر أحمد | Digital Profile</title>
-  <meta name="description" content="الصفحة الرقمية الشخصية">
-  <link rel="stylesheet" href="style.css">
-  <script defer src="script.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>أونلاين للهدايا | Online Gifts</title>
+
+<meta name="description"
+content="أونلاين للهدايا - عالم الهدايا المطبوعة والمخصصة وطباعة 3D في تركيا">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap"
+rel="stylesheet">
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Cairo", sans-serif;
+    background: #080808;
+    color: #ffffff;
+    min-height: 100vh;
+}
+
+.page {
+    width: 100%;
+    max-width: 760px;
+    margin: auto;
+    padding: 20px 16px 40px;
+}
+
+/* الذهب */
+
+:root {
+    --gold: #d4af37;
+    --gold-light: #f5d778;
+    --gold-dark: #9c7620;
+}
+
+/* رأس الصفحة */
+
+.hero {
+    text-align: center;
+    padding-top: 10px;
+}
+
+/* الشعار */
+
+.logo {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid var(--gold);
+    box-shadow:
+        0 0 20px rgba(212,175,55,.25),
+        0 0 45px rgba(212,175,55,.08);
+    margin-bottom: 12px;
+}
+
+/* الاسم */
+
+h1 {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--gold-light);
+    letter-spacing: 1px;
+    text-shadow: 0 2px 10px rgba(212,175,55,.18);
+}
+
+.subtitle {
+    color: #d8d8d8;
+    font-size: 15px;
+    margin-top: 5px;
+}
+
+.bio {
+    color: #bdbdbd;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+/* الخط */
+
+.gold-line {
+    width: 120px;
+    height: 2px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--gold),
+        transparent
+    );
+    margin: 18px auto;
+}
+
+/* الأزرار */
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.btn {
+    width: 100%;
+    min-height: 58px;
+    border: 1px solid rgba(212,175,55,.65);
+    border-radius: 15px;
+    background: linear-gradient(
+        135deg,
+        #171717,
+        #0d0d0d
+    );
+    color: #fff;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 17px;
+    font-weight: 700;
+    transition: .2s ease;
+    box-shadow: 0 5px 18px rgba(0,0,0,.35);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    border-color: var(--gold-light);
+    box-shadow: 0 8px 25px rgba(212,175,55,.15);
+}
+
+.icon {
+    font-size: 23px;
+}
+
+/* زر إضافة جهة الاتصال */
+
+.contact-btn {
+    background: linear-gradient(
+        135deg,
+        #d4af37,
+        #a77c1c
+    );
+    color: #080808;
+    border: none;
+    font-size: 18px;
+    box-shadow: 0 8px 25px rgba(212,175,55,.20);
+}
+
+.contact-btn:hover {
+    color: #000;
+    box-shadow: 0 10px 30px rgba(212,175,55,.30);
+}
+
+/* الأعمال */
+
+.works-title {
+    text-align: center;
+    margin: 32px 0 15px;
+    color: var(--gold-light);
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.works {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.work {
+    background: #111;
+    border: 1px solid #2b2b2b;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.work img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+}
+
+.work-title {
+    text-align: center;
+    padding: 6px 3px;
+    font-size: 10px;
+    color: #d6d6d6;
+}
+
+/* الفوتر */
+
+.footer {
+    text-align: center;
+    margin-top: 30px;
+    color: #777;
+    font-size: 12px;
+}
+
+.footer strong {
+    color: var(--gold);
+}
+
+/* موبايل */
+
+@media (max-width: 500px) {
+
+    .page {
+        padding: 16px 12px 35px;
+    }
+
+    .logo {
+        width: 135px;
+        height: 135px;
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+
+    .btn {
+        min-height: 60px;
+        font-size: 16px;
+    }
+
+    .works {
+        gap: 6px;
+    }
+
+    .work-title {
+        font-size: 9px;
+    }
+}
+
+</style>
 </head>
+
 <body>
-  <main class="page">
-    <section class="hero">
-      <div class="gold-wave wave-1"></div>
-      <div class="gold-wave wave-2"></div>
-      <button class="lang" type="button" onclick="toggleLanguage()"><span>🌐</span> العربية <span>⌄</span></button>
 
-      <div class="profile">
-        <!-- بدّل profile.jpg بصورة الشخص -->
-        <img class="avatar" src="profile.jpg" alt="صورة عمر أحمد" onerror="this.src='avatar-placeholder.svg'">
-        <h1>عمر أحمد</h1>
-        <div class="subtitle"><span>◆</span> Digital Profile <span>◆</span></div>
-        <p class="bio">أشاركك كل ما يهمك في مكان واحد</p>
-        <div class="gold-line"></div>
-      </div>
-    </section>
+<main class="page">
 
-    <section class="content">
-      <div class="links">
-        <a class="link whatsapp" href="https://wa.me/905000000000" target="_blank" rel="noopener">
-          <span class="icon">◔</span><span class="link-text"><b>واتساب</b><small>تواصل معي مباشرة</small></span><span class="arrow">‹</span>
-        </a>
-        <a class="link instagram" href="https://instagram.com/" target="_blank" rel="noopener">
-          <span class="icon">◎</span><span class="link-text"><b>Instagram</b><small>تابعني على إنستغرام</small></span><span class="arrow">‹</span>
-        </a>
-        <a class="link tiktok" href="https://tiktok.com/" target="_blank" rel="noopener">
-          <span class="icon">♪</span><span class="link-text"><b>TikTok</b><small>شاهد مقاطعي على تيك توك</small></span><span class="arrow">‹</span>
-        </a>
-        <a class="link facebook" href="https://facebook.com/" target="_blank" rel="noopener">
-          <span class="icon">f</span><span class="link-text"><b>Facebook</b><small>صفحتي على فيسبوك</small></span><span class="arrow">‹</span>
-        </a>
-        <a class="link website" href="https://example.com/" target="_blank" rel="noopener">
-          <span class="icon">🌐</span><span class="link-text"><b>الموقع الإلكتروني</b><small>تصفح موقعي الرسمي</small></span><span class="arrow">‹</span>
-        </a>
-        <a class="link maps" href="https://maps.google.com/" target="_blank" rel="noopener">
-          <span class="icon">●</span><span class="link-text"><b>موقعنا على الخريطة</b><small>اعرف موقعنا بسهولة</small></span><span class="arrow">‹</span>
-        </a>
-      </div>
+<section class="hero">
 
-      <section class="portfolio">
-        <div class="section-title"><span></span><h2>أعمالي</h2><span></span></div>
-        <div class="gallery">
-          <img src="work-1.jpg" alt="عمل 1" onerror="this.src='work-placeholder.svg'">
-          <img src="work-2.jpg" alt="عمل 2" onerror="this.src='work-placeholder.svg'">
-          <img src="work-3.jpg" alt="عمل 3" onerror="this.src='work-placeholder.svg'">
-          <img src="work-4.jpg" alt="عمل 4" onerror="this.src='work-placeholder.svg'">
-        </div>
-        <a class="save-contact" href="contact.vcf" download>👤 <b>احفظ جهات الاتصال</b></a>
-      </section>
-    </section>
+    <!-- صورة اللوغو -->
+    <img
+        class="logo"
+        src="profile.jpg"
+        alt="أونلاين للهدايا"
+        onerror="this.src='avatar-placeholder.svg'"
+    >
 
-    <footer>
-      <div>🎁 &nbsp; Powered by <strong>Online Gifts</strong></div>
-      <div class="footer-icons">
-        <a href="https://wa.me/905000000000">◔</a>
-        <a href="https://instagram.com/">◎</a>
-        <a href="https://tiktok.com/">♪</a>
-        <a href="https://facebook.com/">f</a>
-        <a href="https://example.com/">🌐</a>
-      </div>
-    </footer>
-  </main>
+    <h1>أونلاين للهدايا</h1>
+
+    <div class="subtitle">
+        Online Gifts
+    </div>
+
+    <p class="bio">
+        عالم الهدايا المطبوعة والمخصصة والهدايا المميزة
+    </p>
+
+    <div class="gold-line"></div>
+
+</section>
+
+
+<!-- الأزرار -->
+
+<section class="buttons">
+
+    <!-- إضافة إلى جهات الاتصال -->
+    <a
+        class="btn contact-btn"
+        href="contact.vcf"
+        download="Online-Gifts.vcf"
+    >
+        <span class="icon">👤</span>
+        إضافة لجهات الاتصال
+    </a>
+
+
+    <!-- واتساب -->
+    <a
+        class="btn"
+        href="https://wa.me/message/LR3NY7SMCEM3B1/"
+        target="_blank"
+    >
+        <span class="icon">💬</span>
+        واتساب
+    </a>
+
+
+    <!-- Instagram -->
+    <a
+        class="btn"
+        href="https://www.instagram.com/telef98/?hl=ar"
+        target="_blank"
+    >
+        <span class="icon">◎</span>
+        Instagram
+    </a>
+
+
+    <!-- TikTok -->
+    <a
+        class="btn"
+        href="https://www.tiktok.com/@on_gift"
+        target="_blank"
+    >
+        <span class="icon">♪</span>
+        TikTok
+    </a>
+
+
+    <!-- Facebook -->
+    <a
+        class="btn"
+        href="https://www.facebook.com/onlayinn"
+        target="_blank"
+    >
+        <span class="icon">f</span>
+        Facebook
+    </a>
+
+
+    <!-- Google Maps -->
+    <a
+        class="btn"
+        href="https://g.page/r/CRAfNQ9SrlvSEAE/review"
+        target="_blank"
+    >
+        <span class="icon">📍</span>
+        قيّمنا على Google Maps
+    </a>
+
+
+    <!-- قناة واتساب -->
+    <a
+        class="btn"
+        href="https://whatsapp.com/channel/0029VaaNlxi2UPBBkc38612Z"
+        target="_blank"
+    >
+        <span class="icon">📢</span>
+        قناتنا على واتساب
+    </a>
+
+
+    <!-- الاتصال -->
+    <a
+        class="btn"
+        href="tel:+905349154274"
+    >
+        <span class="icon">📞</span>
+        اتصل بنا
+    </a>
+
+</section>
+
+
+<!-- أعمالنا -->
+
+<h2 class="works-title">
+    من أعمالنا
+</h2>
+
+<section class="works">
+
+    <div class="work">
+        <img src="work-1.jpg" alt="هدايا مخصصة">
+        <div class="work-title">هدايا مخصصة</div>
+    </div>
+
+    <div class="work">
+        <img src="work-2.jpg" alt="طباعة">
+        <div class="work-title">طباعة</div>
+    </div>
+
+    <div class="work">
+        <img src="work-3.jpg" alt="طباعة 3D">
+        <div class="work-title">طباعة 3D</div>
+    </div>
+
+    <div class="work">
+        <img src="work-4.jpg" alt="هدايا">
+        <div class="work-title">هدايا</div>
+    </div>
+
+</section>
+
+
+<footer class="footer">
+    <strong>أونلاين للهدايا</strong>
+    <br>
+    جميع الحقوق محفوظة
+</footer>
+
+</main>
+
 </body>
 </html>
