@@ -178,6 +178,16 @@ th{background:#faf8f0}
         </div>
       </div>
 
+      <div id="siteLinkBox" class="card hidden" style="margin-top:16px;background:#f7fbff">
+        <h2 style="margin-bottom:8px">رابط الموقع</h2>
+        <div class="muted">هذا هو الرابط النهائي الذي تضعه على بطاقة NFC.</div>
+        <div style="display:flex;gap:8px;align-items:stretch;margin-top:10px;flex-wrap:wrap">
+          <input id="siteLink" readonly style="flex:1;min-width:260px">
+          <button class="secondary" id="copySiteLinkBtn" type="button">نسخ الرابط</button>
+          <button class="secondary" id="openSiteLinkBtn" type="button">فتح</button>
+        </div>
+      </div>
+
       <div id="fillLinkBox" class="card hidden" style="margin-top:16px;background:#fbfaf5">
         <h2 style="margin-bottom:8px">رابط تعبئة بيانات العميل</h2>
         <div class="muted">أرسله للعميل ليملأ بياناته مرة واحدة.</div>
@@ -246,6 +256,18 @@ function clearMsg(id){
   el.classList.remove("show");
 }
 
+function buildSiteLink(slug){
+  const base = window.location.origin + window.location.pathname.replace(/admin\.html$/,"");
+  return `${base}?client=${encodeURIComponent(slug)}`;
+}
+
+function showSiteLink(slug){
+  if(!slug) return;
+  const url = buildSiteLink(slug);
+  $("siteLink").value = url;
+  $("siteLinkBox").classList.remove("hidden");
+}
+
 function clearForm(){
   editingId = null;
   $("editorTitle").textContent = "إضافة عميل";
@@ -263,6 +285,8 @@ function clearForm(){
   $("fillLinkBox").classList.add("hidden");
   $("fillLink").value = "";
   $("fillStatus").textContent = "";
+  $("siteLinkBox").classList.add("hidden");
+  $("siteLink").value = "";
 }
 
 
@@ -414,6 +438,7 @@ async function editCustomer(id){
 
   $("default_language").value = data.default_language || "ar";
   $("show_photo").checked = data.show_photo !== false;
+  showSiteLink(data.slug);
 
   if (data.fill_token) {
     const url = `${window.location.origin}${window.location.pathname.replace(/admin\.html$/,"")}fill.html?token=${encodeURIComponent(data.fill_token)}`;
@@ -486,6 +511,23 @@ $("cancelBtn").addEventListener("click", ()=>{
 $("refreshBtn").addEventListener("click", loadCustomers);
 
 
+$("copySiteLinkBtn").addEventListener("click", async ()=>{
+  const value = $("siteLink").value.trim();
+  if(!value) return;
+  try{
+    await navigator.clipboard.writeText(value);
+  }catch{
+    $("siteLink").select();
+    document.execCommand("copy");
+  }
+  showMsg("appMsg","تم نسخ رابط الموقع.", true);
+});
+
+$("openSiteLinkBtn").addEventListener("click", ()=>{
+  const value = $("siteLink").value.trim();
+  if(value) window.open(value, "_blank", "noopener");
+});
+
 $("copyFillLinkBtn").addEventListener("click", async ()=>{
   const value = $("fillLink").value.trim();
   if(!value) return;
@@ -555,9 +597,15 @@ $("saveBtn").addEventListener("click", async ()=>{
 
     if(result.error) throw result.error;
 
+    let savedSlug = payload.slug;
+    if(editingId){
+      const {data:updatedRow} = await client.from("customers").select("slug").eq("id",editingId).single();
+      if(updatedRow?.slug) savedSlug = updatedRow.slug;
+    }
+
+    showSiteLink(savedSlug);
     showMsg("appMsg", editingId ? "تم تعديل العميل والصورة بنجاح" : "تمت إضافة العميل وبدء رابط التعبئة بنجاح", true);
-    $("editorCard").classList.add("hidden");
-    clearForm();
+    $("editorCard").classList.remove("hidden");
     await loadCustomers();
   }catch(error){
     showMsg("appMsg","تعذر الحفظ أو رفع الصورة: " + error.message);
