@@ -74,8 +74,9 @@ button{font:inherit;border:0;border-radius:10px;padding:12px 17px;font-weight:80
     </div>
 
     <div class="actions" style="margin-top:16px">
-      <button class="primary" id="submitBtn">إرسال البيانات</button>
+      <button class="primary" id="submitBtn" type="submit">إرسال البيانات</button>
     </div>
+    </form>
   </section>
 </div>
 
@@ -122,9 +123,12 @@ async function uploadPhotoIfNeeded(){
   return client.storage.from("customer-images").getPublicUrl(path).data.publicUrl;
 }
 
-$("submitBtn").addEventListener("click",async()=>{
+$("customerForm").addEventListener("submit",async(event)=>{
+  event.preventDefault();
+  const button = $("submitBtn");
+  button.disabled = true;
   try{
-    if(!$("name_ar").value.trim()){msg("الاسم بالعربي مطلوب.");return;}
+    if(!$("name_ar").value.trim()){msg("الاسم بالعربي مطلوب.");button.disabled=false;return;}
     const photoUrl=await uploadPhotoIfNeeded();
 
     const payload={
@@ -182,6 +186,7 @@ $("submitBtn").addEventListener("click",async()=>{
       window.location.href = siteUrl;
     });
   }catch(e){
+    button.disabled = false;
     msg("تعذر إرسال البيانات: "+e.message);
   }
 });
