@@ -18,20 +18,22 @@
       <div class="gold-wave wave-1"></div>
       <div class="gold-wave wave-2"></div>
 
-      <button class="lang" type="button">
-        <span>🌐</span> العربية <span>⌄</span>
-      </button>
+      <div class="lang-switch" aria-label="اختيار اللغة">
+        <button class="lang-btn active" type="button" data-lang="ar">العربية</button>
+        <span class="lang-sep">|</span>
+        <button class="lang-btn" type="button" data-lang="tr">Türkçe</button>
+      </div>
 
       <div class="profile">
         <img class="avatar" src="online-gifts-logo.png" alt="أونلاين للهدايا">
 
-        <h1>أونلاين للهدايا</h1>
+        <h1 data-ar="أونلاين للهدايا" data-tr="Online Hediyeler">أونلاين للهدايا</h1>
 
         <div class="subtitle">
           <span>◆</span> Online Gifts <span>◆</span>
         </div>
 
-        <p class="bio">
+        <p class="bio" data-ar="عالم الهدايا المطبوعة والمخصصة والهدايا المميزة" data-tr="Kişiye özel ve baskılı hediyeler dünyası">
           عالم الهدايا المطبوعة والمخصصة والهدايا المميزة
         </p>
 
@@ -45,8 +47,8 @@
         <a class="link contact" href="contact.vcf" download="Online-Gifts.vcf">
           <span class="icon">👤</span>
           <span class="link-text">
-            <b>إضافة لجهات الاتصال</b>
-            <small>احفظ بيانات أونلاين للهدايا</small>
+            <b data-ar="إضافة لجهات الاتصال" data-tr="Kişilere Ekle">إضافة لجهات الاتصال</b>
+            <small data-ar="احفظ بيانات أونلاين للهدايا" data-tr="Online Gifts iletişim bilgilerini kaydet">احفظ بيانات أونلاين للهدايا</small>
           </span>
           <span class="arrow">‹</span>
         </a>
@@ -54,8 +56,8 @@
         <a class="link whatsapp" href="https://wa.me/message/LR3NY7SMCEM3B1/" target="_blank" rel="noopener">
           <span class="icon">◔</span>
           <span class="link-text">
-            <b>واتساب</b>
-            <small>تواصل معنا مباشرة</small>
+            <b data-ar="واتساب" data-tr="WhatsApp">واتساب</b>
+            <small data-ar="تواصل معنا مباشرة" data-tr="Bizimle doğrudan iletişime geçin">تواصل معنا مباشرة</small>
           </span>
           <span class="arrow">‹</span>
         </a>
@@ -64,7 +66,7 @@
           <span class="icon">◎</span>
           <span class="link-text">
             <b>Instagram</b>
-            <small>تابعنا على إنستغرام</small>
+            <small data-ar="تابعنا على إنستغرام" data-tr="Instagram'dan bizi takip edin">تابعنا على إنستغرام</small>
           </span>
           <span class="arrow">‹</span>
         </a>
@@ -73,7 +75,7 @@
           <span class="icon">♪</span>
           <span class="link-text">
             <b>TikTok</b>
-            <small>شاهد أعمالنا على تيك توك</small>
+            <small data-ar="شاهد أعمالنا على تيك توك" data-tr="TikTok'ta çalışmalarımızı görün">شاهد أعمالنا على تيك توك</small>
           </span>
           <span class="arrow">‹</span>
         </a>
@@ -82,7 +84,7 @@
           <span class="icon">f</span>
           <span class="link-text">
             <b>Facebook</b>
-            <small>تابعنا على فيسبوك</small>
+            <small data-ar="تابعنا على فيسبوك" data-tr="Facebook'tan bizi takip edin">تابعنا على فيسبوك</small>
           </span>
           <span class="arrow">‹</span>
         </a>
@@ -90,8 +92,8 @@
         <a class="link maps" href="https://g.page/r/CRAfNQ9SrlvSEAE/review" target="_blank" rel="noopener">
           <span class="icon">📍</span>
           <span class="link-text">
-            <b>Google Maps</b>
-            <small>قيّمنا هنا</small>
+            <b data-ar="Google Maps" data-tr="Google Maps">Google Maps</b>
+            <small data-ar="قيّمنا هنا" data-tr="Bizi burada değerlendirin">قيّمنا هنا</small>
           </span>
           <span class="arrow">‹</span>
         </a>
@@ -99,8 +101,8 @@
         <a class="link channel" href="https://whatsapp.com/channel/0029VaaNlxi2UPBBkc38612Z" target="_blank" rel="noopener">
           <span class="icon">◉</span>
           <span class="link-text">
-            <b>قناتنا على واتساب</b>
-            <small>تابع أحدث العروض والمنتجات</small>
+            <b data-ar="قناتنا على واتساب" data-tr="WhatsApp Kanalımız">قناتنا على واتساب</b>
+            <small data-ar="تابع أحدث العروض والمنتجات" data-tr="En yeni kampanya ve ürünleri takip edin">تابع أحدث العروض والمنتجات</small>
           </span>
           <span class="arrow">‹</span>
         </a>
@@ -109,16 +111,16 @@
 
       <section class="portfolio">
         <div class="section-title">
-          <span></span><h2>أعمالنا</h2><span></span>
+          <span></span><h2 data-ar="أعمالنا" data-tr="Çalışmalarımız">أعمالنا</h2><span></span>
         </div>
 
         <div class="gallery">
-          <div class="work"><img src="work-1.svg" alt="بكجات هدايا"><span>بكجات هدايا</span></div>
-          <div class="work"><img src="work-2.svg" alt="ميداليات مفاتيح"><span>ميداليات مفاتيح</span></div>
-          <div class="work"><img src="work-3.svg" alt="طباعة 3D"><span>طباعة 3D</span></div>
-          <div class="work"><img src="work-4.svg" alt="أباجورات مضيئة"><span>أباجورات مضيئة</span></div>
-          <div class="work"><img src="work-5.svg" alt="ساعات حائط"><span>ساعات حائط</span></div>
-          <div class="work"><img src="work-6.svg" alt="طباعة مخصصة"><span>طباعة مخصصة</span></div>
+          <div class="work"><img src="work-1.svg" alt="بكجات هدايا"><span data-ar="بكجات هدايا" data-tr="Hediye Setleri">بكجات هدايا</span></div>
+          <div class="work"><img src="work-2.svg" alt="ميداليات مفاتيح"><span data-ar="ميداليات مفاتيح" data-tr="Anahtarlıklar">ميداليات مفاتيح</span></div>
+          <div class="work"><img src="work-3.svg" alt="طباعة 3D"><span data-ar="طباعة 3D" data-tr="3D Baskı">طباعة 3D</span></div>
+          <div class="work"><img src="work-4.svg" alt="أباجورات مضيئة"><span data-ar="أباجورات مضيئة" data-tr="Işıklı Lambalar">أباجورات مضيئة</span></div>
+          <div class="work"><img src="work-5.svg" alt="ساعات حائط"><span data-ar="ساعات حائط" data-tr="Duvar Saatleri">ساعات حائط</span></div>
+          <div class="work"><img src="work-6.svg" alt="طباعة مخصصة"><span data-ar="طباعة مخصصة" data-tr="Özel Baskı">طباعة مخصصة</span></div>
         </div>
       </section>
     </section>
@@ -135,5 +137,36 @@
     </footer>
 
   </main>
+
+<script>
+(function () {
+  const buttons = document.querySelectorAll(".lang-btn");
+  const translatable = document.querySelectorAll("[data-ar][data-tr]");
+
+  function setLanguage(lang) {
+    const isTurkish = lang === "tr";
+    document.documentElement.lang = isTurkish ? "tr" : "ar";
+    document.documentElement.dir = isTurkish ? "ltr" : "rtl";
+
+    translatable.forEach((el) => {
+      el.textContent = isTurkish ? el.dataset.tr : el.dataset.ar;
+    });
+
+    buttons.forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.lang === lang);
+    });
+
+    localStorage.setItem("onlineGiftsLanguage", lang);
+  }
+
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => setLanguage(btn.dataset.lang));
+  });
+
+  // العربية هي الصفحة الافتراضية مهما كانت لغة المتصفح.
+  setLanguage(localStorage.getItem("onlineGiftsLanguage") || "ar");
+})();
+</script>
+
 </body>
 </html>
