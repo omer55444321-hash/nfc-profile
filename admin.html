@@ -169,6 +169,24 @@ th{background:#faf8f0}
           <div id="photo_preview" class="muted">لم يتم اختيار صورة</div>
         </div>
 </div>
+        <div class="field full">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input id="show_photo" type="checkbox" checked style="width:18px;height:18px">
+            عرض الصورة الشخصية في صفحة العميل
+          </label>
+          <div class="muted">يمكن إلغاء هذا الخيار إذا كان العميل لا يريد صورة شخصية.</div>
+        </div>
+      </div>
+
+      <div id="fillLinkBox" class="card hidden" style="margin-top:16px;background:#fbfaf5">
+        <h2 style="margin-bottom:8px">رابط تعبئة بيانات العميل</h2>
+        <div class="muted">أرسله للعميل ليملأ بياناته مرة واحدة.</div>
+        <div style="display:flex;gap:8px;align-items:stretch;margin-top:10px;flex-wrap:wrap">
+          <input id="fillLink" readonly style="flex:1;min-width:260px">
+          <button class="secondary" id="copyFillLinkBtn" type="button">نسخ الرابط</button>
+          <button class="secondary" id="newFillLinkBtn" type="button">إنشاء رابط جديد</button>
+        </div>
+        <div id="fillStatus" class="muted" style="margin-top:8px"></div>
       </div>
 
       <div class="actions">
@@ -187,6 +205,7 @@ th{background:#faf8f0}
               <th>الرابط</th>
               <th>اللغة</th>
               <th>الحالة</th>
+              <th>تعبئة البيانات</th>
               <th>إجراء</th>
             </tr>
           </thead>
@@ -240,6 +259,10 @@ function clearForm(){
   ["photo_preview"]
     .forEach(id => $(id).textContent = "");
   $("default_language").value = "ar";
+  $("show_photo").checked = true;
+  $("fillLinkBox").classList.add("hidden");
+  $("fillLink").value = "";
+  $("fillStatus").textContent = "";
 }
 
 
@@ -303,6 +326,7 @@ function formData(){
     whatsapp_channel: $("whatsapp_channel").value.trim() || null,
     phone: $("phone").value.trim() || null,
     photo_url: $("photo_url").value.trim() || null,
+    show_photo: $("show_photo").checked,
     default_language: $("default_language").value,
     is_active: true
   };
@@ -325,7 +349,7 @@ async function loadCustomers(){
   clearMsg("appMsg");
   const {data, error} = await client
     .from("customers")
-    .select("id,slug,name_ar,name_tr,default_language,is_active")
+    .select("id,slug,name_ar,name_tr,default_language,is_active,fill_token,fill_used,fill_expires_at")
     .order("created_at",{ascending:false});
 
   if(error){
@@ -337,7 +361,7 @@ async function loadCustomers(){
   body.innerHTML = "";
 
   if(!data.length){
-    body.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#777">لا يوجد عملاء حتى الآن</td></tr>';
+    body.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#777">لا يوجد عملاء حتى الآن</td></tr>';
     return;
   }
 
@@ -351,7 +375,7 @@ async function loadCustomers(){
       <td>${escapeHtml(row.name_ar || row.name_tr || "")}</td>
       <td>${escapeHtml(row.slug)}</td>
       <td>${row.default_language === "tr" ? "Türkçe" : "العربية"}</td>
-      <td>${status}</td>
+      <td>${row.fill_used ? '<span class="badge active">تم الاستلام</span>' : (row.fill_token ? '<span class="badge inactive">بانتظار العميل</span>' : '<span class="badge inactive">غير منشأ</span>')}</td>
       <td>
         <button class="secondary" onclick="editCustomer('${row.id}')">تعديل</button>
         <button class="${row.is_active ? "danger" : "ok"}" onclick="toggleCustomer('${row.id}', ${row.is_active})">
@@ -389,6 +413,17 @@ async function editCustomer(id){
   $("photo_preview").innerHTML = data.photo_url ? `<img class="file-preview" src="${escapeHtml(data.photo_url)}" alt="">` : "";
 
   $("default_language").value = data.default_language || "ar";
+  $("show_photo").checked = data.show_photo !== false;
+
+  if (data.fill_token) {
+    const url = `${window.location.origin}${window.location.pathname.replace(/admin\.html$/,"")}fill.html?token=${encodeURIComponent(data.fill_token)}`;
+    $("fillLink").value = url;
+    $("fillLinkBox").classList.remove("hidden");
+    $("fillStatus").textContent = data.fill_used
+      ? "تم استخدام الرابط."
+      : (data.fill_expires_at ? `صالح حتى: ${new Date(data.fill_expires_at).toLocaleString("ar-TR")}` : "الرابط صالح حتى يتم استخدامه.");
+  }
+
   $("editorCard").classList.remove("hidden");
   window.scrollTo({top:0,behavior:"smooth"});
 }
@@ -450,6 +485,46 @@ $("cancelBtn").addEventListener("click", ()=>{
 
 $("refreshBtn").addEventListener("click", loadCustomers);
 
+
+$("copyFillLinkBtn").addEventListener("click", async ()=>{
+  const value = $("fillLink").value.trim();
+  if(!value) return;
+  try{
+    await navigator.clipboard.writeText(value);
+    $("fillStatus").textContent = "تم نسخ الرابط.";
+  }catch{
+    $("fillLink").select();
+    document.execCommand("copy");
+    $("fillStatus").textContent = "تم نسخ الرابط.";
+  }
+});
+
+$("newFillLinkBtn").addEventListener("click", async ()=>{
+  if(!editingId) {
+    showMsg("appMsg","احفظ العميل أولاً ثم أنشئ رابط التعبئة.");
+    return;
+  }
+  const fillToken = crypto.randomUUID().replaceAll("-", "") + crypto.randomUUID().replaceAll("-", "");
+  const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+
+  const {data,error} = await client
+    .from("customers")
+    .update({fill_token:fillToken,fill_used:false,fill_expires_at:expires,updated_at:new Date().toISOString()})
+    .eq("id",editingId)
+    .select("fill_token,fill_used,fill_expires_at")
+    .single();
+
+  if(error){
+    showMsg("appMsg","تعذر إنشاء رابط جديد: " + error.message);
+    return;
+  }
+
+  const url = `${window.location.origin}${window.location.pathname.replace(/admin\\.html$/,"")}fill.html?token=${encodeURIComponent(data.fill_token)}`;
+  $("fillLink").value = url;
+  $("fillLinkBox").classList.remove("hidden");
+  $("fillStatus").textContent = `تم إنشاء رابط جديد وينتهي في ${new Date(data.fill_expires_at).toLocaleString("ar-TR")}`;
+});
+
 $("saveBtn").addEventListener("click", async ()=>{
   clearMsg("appMsg");
   const payload = formData();
@@ -470,17 +545,22 @@ $("saveBtn").addEventListener("click", async ()=>{
         .update({...payload,updated_at:new Date().toISOString()})
         .eq("id",editingId);
     }else{
+      const fillToken = crypto.randomUUID().replaceAll("-", "") + crypto.randomUUID().replaceAll("-", "");
+      const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+      payload.fill_token = fillToken;
+      payload.fill_used = false;
+      payload.fill_expires_at = expires;
       result = await client.from("customers").insert(payload);
     }
 
     if(result.error) throw result.error;
 
-    showMsg("appMsg", editingId ? "تم تعديل العميل والصور بنجاح" : "تمت إضافة العميل والصور بنجاح", true);
+    showMsg("appMsg", editingId ? "تم تعديل العميل والصورة بنجاح" : "تمت إضافة العميل وبدء رابط التعبئة بنجاح", true);
     $("editorCard").classList.add("hidden");
     clearForm();
     await loadCustomers();
   }catch(error){
-    showMsg("appMsg","تعذر الحفظ أو رفع الصور: " + error.message);
+    showMsg("appMsg","تعذر الحفظ أو رفع الصورة: " + error.message);
   }
 });
 
