@@ -31,9 +31,33 @@ body.maintenance-active > *:not(#siteMaintenance){
   display:none !important;
 }
 </style>
+<style>
+#customerBootGate{
+  position:fixed;inset:0;z-index:100000;display:none;
+  align-items:center;justify-content:center;background:#111;color:#fff;
+  font-family:"Cairo",Arial,sans-serif;text-align:center;padding:24px;
+}
+#customerBootGate.show{display:flex}
+#customerBootGate .boot-box{max-width:460px}
+#customerBootGate .boot-spinner{
+  width:34px;height:34px;border:3px solid rgba(255,255,255,.22);
+  border-top-color:#d4af37;border-radius:50%;
+  animation:customerBootSpin .8s linear infinite;margin:0 auto 14px;
+}
+@keyframes customerBootSpin{to{transform:rotate(360deg)}}
+body.customer-booting > *:not(#customerBootGate){visibility:hidden !important}
+</style>
+
 </head>
 
 <body>
+<div id="customerBootGate" aria-live="polite">
+  <div class="boot-box">
+    <div class="boot-spinner"></div>
+    <div>جارٍ تحميل الصفحة...</div>
+  </div>
+</div>
+
 <div id="siteMaintenance" class="site-maintenance" aria-live="polite">
   <div class="box">
     <h2>الصفحة متوقفة مؤقتًا</h2>
@@ -173,6 +197,17 @@ body.maintenance-active > *:not(#siteMaintenance){
     </footer>
 
   </main>
+
+<script>
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const hasClient = (params.get("client") || "").trim() !== "";
+  if (hasClient) {
+    document.body.classList.add("customer-booting");
+    document.getElementById("customerBootGate")?.classList.add("show");
+  }
+})();
+</script>
 
 <script>
 (() => {
@@ -408,11 +443,15 @@ body.maintenance-active > *:not(#siteMaintenance){
 
     if (error || !data) {
       console.error("Customer load failed:", error || "Customer not found");
-      setLanguage(localStorage.getItem("onlineGiftsLanguage") || "ar");
+      document.body.classList.remove("customer-booting");
+      document.getElementById("customerBootGate")?.classList.remove("show");
+      document.title = "الصفحة غير موجودة | Online Gifts";
       return;
     }
 
     applyCustomer(data);
+    document.body.classList.remove("customer-booting");
+    document.getElementById("customerBootGate")?.classList.remove("show");
   }
 
   buttons.forEach((btn) => {
