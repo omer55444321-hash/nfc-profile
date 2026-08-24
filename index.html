@@ -10,9 +10,36 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+.site-maintenance{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  display:none;
+  place-items:center;
+  background:#080808;
+  color:#fff;
+  text-align:center;
+  padding:24px;
+  font-family:"Cairo",Arial,sans-serif;
+}
+.site-maintenance.show{display:grid}
+.site-maintenance .box{max-width:520px}
+.site-maintenance h2{margin:0 0 10px;font-size:28px}
+.site-maintenance p{margin:0;color:#d7d7d7;line-height:1.8}
+body.maintenance-active > *:not(#siteMaintenance){display:none !important}
+</style>
 </head>
 
 <body>
+<div id="siteMaintenance" class="site-maintenance" aria-live="polite">
+  <div class="box">
+    <h2>الصفحة متوقفة مؤقتًا</h2>
+    <p>نعمل حاليًا على تحديث النظام. يرجى المحاولة لاحقًا.</p>
+  </div>
+</div>
+
   <main class="page">
 
     <section class="hero">
@@ -125,20 +152,6 @@
 
       </div>
 
-      <section class="portfolio">
-        <div class="section-title">
-          <span></span><h2 data-ar="أعمالنا" data-tr="Çalışmalarımız">أعمالنا</h2><span></span>
-        </div>
-
-        <div class="gallery">
-          <div class="work"><img src="work-1.svg" alt="بكجات هدايا"><span data-ar="بكجات هدايا" data-tr="Hediye Setleri">بكجات هدايا</span></div>
-          <div class="work"><img src="work-2.svg" alt="ميداليات مفاتيح"><span data-ar="ميداليات مفاتيح" data-tr="Anahtarlıklar">ميداليات مفاتيح</span></div>
-          <div class="work"><img src="work-3.svg" alt="طباعة 3D"><span data-ar="طباعة 3D" data-tr="3D Baskı">طباعة 3D</span></div>
-          <div class="work"><img src="work-4.svg" alt="أباجورات مضيئة"><span data-ar="أباجورات مضيئة" data-tr="Işıklı Lambalar">أباجورات مضيئة</span></div>
-          <div class="work"><img src="work-5.svg" alt="ساعات حائط"><span data-ar="ساعات حائط" data-tr="Duvar Saatleri">ساعات حائط</span></div>
-          <div class="work"><img src="work-6.svg" alt="طباعة مخصصة"><span data-ar="طباعة مخصصة" data-tr="Özel Baskı">طباعة مخصصة</span></div>
-        </div>
-      </section>
     </section>
 
     <footer>
@@ -317,8 +330,39 @@
     setLanguage(customer.default_language === "tr" ? "tr" : "ar");
   }
 
+
+async function isCustomerPagesEnabled(){
+  const {data,error} = await supabaseClient
+    .from("site_settings")
+    .select("value_text")
+    .eq("key","customer_pages_enabled")
+    .maybeSingle();
+
+  if(error){
+    console.error("Global switch check failed:", error);
+    return true; // fail-open
+  }
+  return data?.value_text !== "false";
+}
+
   async function loadCustomer() {
     const slug = slugFromUrl();
+    const maintenance = document.getElementById("siteMaintenance");
+
+    if (slug) {
+      const enabled = await isCustomerPagesEnabled();
+      if (!enabled) {
+        document.body.classList.add("maintenance-active");
+        maintenance?.classList.add("show");
+        return;
+      }
+      document.body.classList.remove("maintenance-active");
+      maintenance?.classList.remove("show");
+    } else {
+      document.body.classList.remove("maintenance-active");
+      maintenance?.classList.remove("show");
+    }
+
     if (!slug) {
       setLanguage(localStorage.getItem("onlineGiftsLanguage") || "ar");
       return;
@@ -338,6 +382,7 @@
     }
 
     applyCustomer(data);
+    document.title = `${data.name_ar || data.name_tr || "صفحة العميل"} | Online Gifts`;
     // Count only the number of page visits; no visitor details are collected.
     supabaseClient.rpc("increment_customer_view",{p_slug:slug}).then(({error})=>{
       if(error) console.warn("Customer view counter failed:",error);
