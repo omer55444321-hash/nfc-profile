@@ -86,6 +86,18 @@ th{background:#faf8f0}
       <div id="appMsg" class="msg"></div>
     </div>
 
+      <div class="card" style="margin-top:14px;background:#fffaf0">
+        <div class="topbar">
+          <div>
+            <h2 style="margin:0">حالة صفحات العملاء</h2>
+            <div class="muted">إيقاف/تشغيل جميع صفحات العملاء دفعة واحدة عند حدوث مشكلة.</div>
+          </div>
+          <button class="secondary" id="globalPagesToggle" type="button">جارٍ التحقق...</button>
+        </div>
+        <div id="globalSwitchMsg" class="msg"></div>
+      </div>
+
+
     <section id="editorCard" class="card hidden">
       <h2 id="editorTitle">إضافة عميل</h2>
 
@@ -276,6 +288,10 @@ function clearMsg(id){
   el.classList.remove("show");
 }
 
+function buildShareLink(slug){
+  return `https://ktlqactpljbnuwqukgiy.supabase.co/functions/v1/swift-responder?slug=${encodeURIComponent(slug)}`;
+}
+
 function buildSiteLink(slug){
   const base = window.location.origin + window.location.pathname.replace(/admin\.html$/,"");
   return `${base}?client=${encodeURIComponent(slug)}`;
@@ -283,7 +299,7 @@ function buildSiteLink(slug){
 
 function showSiteLink(slug){
   if(!slug) return;
-  const url = buildSiteLink(slug);
+  const url = buildShareLink(slug);
   $("siteLink").value = url;
   $("siteLinkBox").classList.remove("hidden");
 }
@@ -424,6 +440,67 @@ function formData(){
   };
 }
 
+
+async function getCustomerPagesEnabled(){
+  const {data,error} = await client
+    .from("site_settings")
+    .select("value_text")
+    .eq("key","customer_pages_enabled")
+    .maybeSingle();
+  if(error) throw error;
+  return data?.value_text !== "false";
+}
+
+async function renderGlobalSwitch(){
+  const btn = $("globalPagesToggle");
+  if(!btn) return;
+  try{
+    const enabled = await getCustomerPagesEnabled();
+    btn.textContent = enabled ? "إيقاف صفحات العملاء" : "تشغيل صفحات العملاء";
+    btn.className = enabled ? "danger" : "ok";
+    btn.dataset.enabled = enabled ? "true" : "false";
+  }catch(error){
+    btn.textContent = "تعذر التحقق";
+    btn.className = "secondary";
+    showMsg("globalSwitchMsg","تعذر قراءة حالة صفحات العملاء: " + error.message);
+  }
+}
+
+async function setGlobalCustomerPages(){
+  const button = $("globalPagesToggle");
+  if(!button) return;
+  const current = button.dataset.enabled === "true";
+  const nextValue = current ? "false" : "true";
+  const ok = window.confirm(
+    current
+      ? "هل تريد إيقاف جميع صفحات العملاء مؤقتًا؟"
+      : "هل تريد إعادة تشغيل جميع صفحات العملاء؟"
+  );
+  if(!ok) return;
+
+  const {error} = await client
+    .from("site_settings")
+    .update({value_text:nextValue,updated_at:new Date().toISOString()})
+    .eq("key","customer_pages_enabled");
+
+  if(error){
+    showMsg("globalSwitchMsg","تعذر تغيير الحالة: " + error.message);
+    return;
+  }
+  showMsg(
+    "globalSwitchMsg",
+    nextValue === "true"
+      ? "تم تشغيل جميع صفحات العملاء."
+      : "تم إيقاف جميع صفحات العملاء مؤقتًا.",
+    true
+  );
+  await renderGlobalSwitch();
+}
+
+if($("globalPagesToggle")){
+  $("globalPagesToggle").addEventListener("click", setGlobalCustomerPages);
+}
+
 async function requireSession(){
   const {data:{session}} = await client.auth.getSession();
   if(session){
@@ -431,6 +508,7 @@ async function requireSession(){
     $("app").classList.remove("hidden");
     $("whoami").textContent = "مسجل الدخول: " + (session.user.email || "");
     await loadCustomers();
+    await renderGlobalSwitch();
   }else{
     $("loginCard").classList.remove("hidden");
     $("app").classList.add("hidden");
@@ -492,6 +570,7 @@ function renderCustomers(){
           ${row.is_active ? "إيقاف" : "تفعيل"}
         </button>
         <button class="danger" onclick="deleteCustomer('${row.id}')">حذف</button>
+        <button class="secondary" onclick="openCustomerPage('${row.slug}')">رابط صفحة</button>
       </td>
     `;
     body.appendChild(tr);
@@ -612,6 +691,11 @@ async function deleteCustomer(id){
   }catch(error){
     showMsg("appMsg","تعذر حذف العميل: " + error.message);
   }
+}
+
+function openCustomerPage(slug){
+  const url = buildShareLink(slug);
+  window.open(url, "_blank", "noopener");
 }
 
 async function toggleCustomer(id,current){
