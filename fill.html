@@ -18,7 +18,7 @@ h1{margin:0 0 8px;font-size:26px} h2{font-size:19px;margin:0 0 14px}
 .muted{color:#777;font-size:13px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .field{display:flex;flex-direction:column;gap:6px}.full{grid-column:1/-1}
 label{font-weight:700;font-size:13px}
-input,textarea,select{font:inherit;padding:11px 12px;border:1px solid #d9d2c2;border-radius:10px;background:#fff}
+input,textarea,select{font:inherit;padding:11px 12px;border:1px solid #d9d2c2;border-radius:10px;background:#fff} input::placeholder,textarea::placeholder{color:#999;opacity:.58}
 textarea{min-height:90px;resize:vertical}
 button{font:inherit;border:0;border-radius:10px;padding:12px 17px;font-weight:800;cursor:pointer}
 .primary{background:var(--gold);color:#111}.msg{padding:11px 12px;border-radius:10px;background:#f7f7f7;margin-top:12px;display:none}
@@ -31,52 +31,50 @@ button{font:inherit;border:0;border-radius:10px;padding:12px 17px;font-weight:80
 <div class="wrap">
   <section class="card">
     <h1>تعبئة بيانات الصفحة</h1>
-    <div class="muted">عبّي بياناتك مرة واحدة فقط. الحقول لا تُعبّأ تلقائيًا من بيانات المتصفح.</div>
-    <div id="msg" class="msg"></div>
+    <div class="muted">يمكنك تعبئة بياناتك مرتين. عند العودة إلى نفس الرابط ستظهر بياناتك السابقة ويمكنك استكمال أو تعديل الناقص.</div>
+    <div id="msg" class="msg"></div><div id="remaining" class="muted" style="margin-top:8px"></div>
   </section>
 
   <section id="formCard" class="card hidden">
-    <form autocomplete="off" id="customerForm" autocomplete="off" novalidate>
     <div class="grid">
       <div class="field">
         <label>الاسم بالعربي *</label>
-        <input id="name_ar" autocomplete="off" name="name_ar_client" autocomplete="off">
+        <input id="name_ar" placeholder="اكتب اسم الشركة أو اسمك بالعربي هنا">
       </div>
       <div class="field">
         <label>الاسم بالتركي</label>
-        <input id="name_tr" autocomplete="off" name="name_tr_client" autocomplete="off">
+        <input id="name_tr" placeholder="اكتب الاسم بالتركي هنا إن وجد">
       </div>
 
-      <div class="field full"><label>الوصف بالعربي</label><textarea id="bio_ar" name="bio_ar_client" autocomplete="off"></textarea></div>
-      <div class="field full"><label>الوصف بالتركي</label><textarea id="bio_tr" name="bio_tr_client" autocomplete="off"></textarea></div>
+      <div class="field full"><label>الوصف بالعربي</label><textarea id="bio_ar"></textarea></div>
+      <div class="field full"><label>الوصف بالتركي</label><textarea id="bio_tr"></textarea></div>
 
-      <div class="field"><label>WhatsApp</label><input id="whatsapp" autocomplete="off" name="whatsapp_client" autocomplete="off"></div>
-      <div class="field"><label>Instagram</label><input id="instagram" autocomplete="off" name="instagram_client" autocomplete="off"></div>
-      <div class="field"><label>TikTok</label><input id="tiktok" autocomplete="off" name="tiktok_client" autocomplete="off"></div>
-      <div class="field"><label>Facebook</label><input id="facebook" autocomplete="off" name="facebook_client" autocomplete="off"></div>
-      <div class="field"><label>Google Maps</label><input id="maps" autocomplete="off" name="maps_client" autocomplete="off"></div>
-      <div class="field"><label>قناة WhatsApp</label><input id="whatsapp_channel" autocomplete="off" name="whatsapp_channel_client" autocomplete="off"></div>
-      <div class="field"><label>رقم الهاتف</label><input id="phone" autocomplete="off" name="phone_client" autocomplete="off"></div>
+      <div class="field"><label>WhatsApp</label><input id="whatsapp" placeholder="أرجو وضع رابط رقم الواتساب هنا"></div>
+      <div class="field"><label>Instagram</label><input id="instagram" placeholder="أرجو وضع رابط حساب الإنستغرام هنا"></div>
+      <div class="field"><label>TikTok</label><input id="tiktok" placeholder="أرجو وضع رابط حساب التيك توك هنا"></div>
+      <div class="field"><label>Facebook</label><input id="facebook" placeholder="أرجو وضع رابط صفحة الفيسبوك هنا"></div>
+      <div class="field"><label>Google Maps</label><input id="maps" placeholder="أرجو وضع رابط موقعك على الخريطة هنا"></div>
+      <div class="field"><label>قناة WhatsApp</label><input id="whatsapp_channel" placeholder="أرجو وضع رابط قناة الواتساب هنا"></div>
+      <div class="field"><label>رقم الهاتف</label><input id="phone" placeholder="أرجو وضع رقم الهاتف هنا"></div>
       <div class="field">
         <label>اللغة الافتراضية</label>
-        <select id="default_language" name="language_client" autocomplete="off"><option value="ar">العربية</option><option value="tr">Türkçe</option></select>
+        <select id="default_language"><option value="ar">العربية</option><option value="tr">Türkçe</option></select>
       </div>
 
       <div class="field full">
         <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
-          <input id="show_photo" type="checkbox" checked style="width:18px;height:18px" name="show_photo_client" autocomplete="off">
+          <input id="show_photo" type="checkbox" checked style="width:18px;height:18px">
           أريد عرض صورتي الشخصية في الصفحة
         </label>
-        <input id="photo_file" type="file" accept="image/*" name="profile_photo_client" autocomplete="off">
+        <input id="photo_file" type="file" accept="image/*">
         <img id="preview" class="preview hidden" alt="">
         <div class="muted">إذا لم تكن تريد صورة شخصية، ألغِ الخيار واترك رفع الصورة فارغًا.</div>
       </div>
     </div>
 
     <div class="actions" style="margin-top:16px">
-      <button class="primary" id="submitBtn" type="submit">إرسال البيانات</button>
+      <button class="primary" id="submitBtn">إرسال البيانات</button>
     </div>
-    </form>
   </section>
 </div>
 
@@ -98,6 +96,15 @@ async function findCustomer(){
   if(error || !data){ msg("هذا الرابط غير صالح أو تم استخدامه/انتهت صلاحيته."); return; }
 
   customer = data;
+  const keys=["name_ar","name_tr","bio_ar","bio_tr","whatsapp","instagram","tiktok","facebook","maps","whatsapp_channel","phone","default_language"];
+  keys.forEach(key=>{ const el=$(key); if(el) el.value = data[key] ?? ""; });
+  $("show_photo").checked = data.show_photo !== false;
+  if(data.photo_url && data.show_photo){
+    $("preview").src=data.photo_url;
+    $("preview").classList.remove("hidden");
+  }
+  const uses=Number(data.fill_uses || 0);
+  $("remaining").textContent=`المتاح: ${Math.max(0,2-uses)} استخدام من أصل 2.`;
   $("formCard").classList.remove("hidden");
 }
 
@@ -123,12 +130,9 @@ async function uploadPhotoIfNeeded(){
   return client.storage.from("customer-images").getPublicUrl(path).data.publicUrl;
 }
 
-$("customerForm").addEventListener("submit",async(event)=>{
-  event.preventDefault();
-  const button = $("submitBtn");
-  button.disabled = true;
+$("submitBtn").addEventListener("click",async()=>{
   try{
-    if(!$("name_ar").value.trim()){msg("الاسم بالعربي مطلوب.");button.disabled=false;return;}
+    if(!$("name_ar").value.trim()){msg("الاسم بالعربي مطلوب.");return;}
     const photoUrl=await uploadPhotoIfNeeded();
 
     const payload={
@@ -152,41 +156,18 @@ $("customerForm").addEventListener("submit",async(event)=>{
     const {data:result,error}=await client.rpc("submit_customer_form",{payload});
     if(error) throw error;
 
-    const base = window.location.origin + window.location.pathname.replace(/fill\.html$/,"");
-    const siteUrl = `${base}?client=${encodeURIComponent(result.slug)}`;
+    const uses=Number(result?.fill_uses || 0);
+    const remaining=Math.max(0, Number(result?.remaining_uses ?? (2-uses)));
+    $("remaining").textContent=`المتاح: ${remaining} استخدام من أصل 2.`;
 
-    $("formCard").classList.add("hidden");
-    msg("تم إرسال بياناتك بنجاح. شكرًا لك.");
-
-    const success = document.createElement("div");
-    success.className = "card";
-    success.innerHTML = `
-      <h2>رابط صفحتك جاهز ✅</h2>
-      <div class="muted" style="margin-bottom:10px">هذا هو الرابط الذي سيُستخدم على بطاقة NFC:</div>
-      <input id="finalSiteLink" readonly style="width:100%;font:inherit;padding:11px 12px;border:1px solid #d9d2c2;border-radius:10px;background:#fff" value="${siteUrl}">
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
-        <button class="primary" id="copyFinalLink" type="button">نسخ الرابط</button>
-        <button class="secondary" id="openFinalLink" type="button">فتح الصفحة</button>
-      </div>
-    `;
-    document.querySelector(".wrap").appendChild(success);
-
-    document.getElementById("copyFinalLink").addEventListener("click", async ()=>{
-      try{
-        await navigator.clipboard.writeText(siteUrl);
-      }catch{
-        const input = document.getElementById("finalSiteLink");
-        input.select();
-        document.execCommand("copy");
-      }
-      msg("تم نسخ رابط الصفحة.");
-    });
-
-    document.getElementById("openFinalLink").addEventListener("click", ()=>{
-      window.location.href = siteUrl;
-    });
+    if(remaining>0){
+      msg("تم حفظ بياناتك. يمكنك فتح نفس الرابط مرة ثانية لإكمال أو تعديل البيانات.");
+      $("submitBtn").textContent="حفظ التحديث";
+    }else{
+      $("formCard").classList.add("hidden");
+      msg("تم حفظ بياناتك بالمرتين المسموحتين. شكرًا لك.");
+    }
   }catch(e){
-    button.disabled = false;
     msg("تعذر إرسال البيانات: "+e.message);
   }
 });
