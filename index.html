@@ -10,7 +10,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
 .site-maintenance{
   position:fixed;
@@ -18,7 +17,7 @@
   z-index:99999;
   display:none;
   place-items:center;
-  background:#080808;
+  background:#111;
   color:#fff;
   text-align:center;
   padding:24px;
@@ -28,11 +27,48 @@
 .site-maintenance .box{max-width:520px}
 .site-maintenance h2{margin:0 0 10px;font-size:28px}
 .site-maintenance p{margin:0;color:#d7d7d7;line-height:1.8}
-body.maintenance-active > *:not(#siteMaintenance){display:none !important}
+body.maintenance-active > *:not(#siteMaintenance){
+  display:none !important;
+}
 </style>
+<style>
+#customerBootGate{
+  position:fixed;inset:0;z-index:100000;display:none;
+  align-items:center;justify-content:center;background:#111;color:#fff;
+  font-family:"Cairo",Arial,sans-serif;text-align:center;padding:24px;
+}
+#customerBootGate.show{display:flex}
+#customerBootGate .boot-box{max-width:460px}
+#customerBootGate .boot-spinner{
+  width:34px;height:34px;border:3px solid rgba(255,255,255,.22);
+  border-top-color:#d4af37;border-radius:50%;
+  animation:customerBootSpin .8s linear infinite;margin:0 auto 14px;
+}
+@keyframes customerBootSpin{to{transform:rotate(360deg)}}
+body.customer-booting > *:not(#customerBootGate){visibility:hidden !important}
+body.customer-page-mode footer{display:none !important}
+</style>
+
 </head>
 
 <body>
+<script>
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const hasClient = (params.get("client") || "").trim() !== "";
+  if (hasClient) {
+    document.body.classList.add("customer-booting");
+    document.getElementById("customerBootGate")?.classList.add("show");
+  }
+})();
+</script>
+<div id="customerBootGate" aria-live="polite">
+  <div class="boot-box">
+    <div class="boot-spinner"></div>
+    <div>جارٍ تحميل الصفحة...</div>
+  </div>
+</div>
+
 <div id="siteMaintenance" class="site-maintenance" aria-live="polite">
   <div class="box">
     <h2>الصفحة متوقفة مؤقتًا</h2>
@@ -152,10 +188,24 @@ body.maintenance-active > *:not(#siteMaintenance){display:none !important}
 
       </div>
 
+      <section class="portfolio" id="portfolioSection">
+        <div class="section-title">
+          <span></span><h2 data-ar="أعمالنا" data-tr="Çalışmalarımız">أعمالنا</h2><span></span>
+        </div>
+
+        <div class="gallery">
+          <div class="work"><img src="work-1.svg" alt="بكجات هدايا"><span data-ar="بكجات هدايا" data-tr="Hediye Setleri">بكجات هدايا</span></div>
+          <div class="work"><img src="work-2.svg" alt="ميداليات مفاتيح"><span data-ar="ميداليات مفاتيح" data-tr="Anahtarlıklar">ميداليات مفاتيح</span></div>
+          <div class="work"><img src="work-3.svg" alt="طباعة 3D"><span data-ar="طباعة 3D" data-tr="3D Baskı">طباعة 3D</span></div>
+          <div class="work"><img src="work-4.svg" alt="أباجورات مضيئة"><span data-ar="أباجورات مضيئة" data-tr="Işıklı Lambalar">أباجورات مضيئة</span></div>
+          <div class="work"><img src="work-5.svg" alt="ساعات حائط"><span data-ar="ساعات حائط" data-tr="Duvar Saatleri">ساعات حائط</span></div>
+          <div class="work"><img src="work-6.svg" alt="طباعة مخصصة"><span data-ar="طباعة مخصصة" data-tr="Özel Baskı">طباعة مخصصة</span></div>
+        </div>
+      </section>
     </section>
 
     <footer>
-      <div>🎁 &nbsp; Powered by <strong>Online Gifts</strong></div>
+      <div id="footerCredit">🎁 &nbsp; Powered by <strong>Online Gifts</strong></div>
       <div class="footer-icons">
         <a id="footerWhatsapp" href="https://wa.me/message/LR3NY7SMCEM3B1/" aria-label="WhatsApp">◔</a>
         <a id="footerInstagram" href="https://www.instagram.com/telef98/?hl=ar" aria-label="Instagram">◎</a>
@@ -166,6 +216,8 @@ body.maintenance-active > *:not(#siteMaintenance){display:none !important}
     </footer>
 
   </main>
+
+
 
 <script>
 (() => {
@@ -217,6 +269,22 @@ body.maintenance-active > *:not(#siteMaintenance){display:none !important}
       el.removeAttribute("target");
       el.removeAttribute("rel");
     }
+    el.style.display = clean ? "" : "none";
+  }
+
+  function setOptionalLink(el, value) {
+    if (!el) return;
+    const clean = (value || "").trim();
+    el.style.display = clean ? "" : "none";
+    if (clean) {
+      el.href = clean;
+      el.target = "_blank";
+      el.rel = "noopener";
+    } else {
+      el.removeAttribute("href");
+      el.removeAttribute("target");
+      el.removeAttribute("rel");
+    }
   }
 
   function slugFromUrl() {
@@ -250,7 +318,13 @@ body.maintenance-active > *:not(#siteMaintenance){display:none !important}
     profileBio.dataset.tr = bioTr;
     profileBio.textContent = bioAr;
 
-    document.getElementById("profileSubtitle").textContent = "Digital Profile";
+    const footerCredit = document.getElementById("footerCredit");
+    if (footerCredit) {
+      footerCredit.innerHTML = "🎁 &nbsp; Powered by <strong></strong>";
+      const creditName = footerCredit.querySelector("strong");
+      if (creditName) creditName.textContent = nameAr;
+    }
+        document.getElementById("profileSubtitle").textContent = "Digital Profile";
     document.getElementById("profilePhoto").src = customer.photo_url || "online-gifts-logo.png";
     document.getElementById("profilePhoto").alt = nameAr;
 
@@ -259,29 +333,24 @@ body.maintenance-active > *:not(#siteMaintenance){display:none !important}
     document.getElementById("contactSub").dataset.tr =
       `Kişilerinizde ${nameTr} bilgilerini kaydedin`;
 
-    setLink(links.whatsapp, customer.whatsapp);
-    setLink(links.instagram, customer.instagram);
-    setLink(links.tiktok, customer.tiktok);
-    setLink(links.facebook, customer.facebook);
-    setLink(links.maps, customer.maps);
-    setLink(links.channel, customer.whatsapp_channel);
+    setOptionalLink(links.whatsapp, customer.whatsapp);
+    setOptionalLink(links.instagram, customer.instagram);
+    setOptionalLink(links.tiktok, customer.tiktok);
+    setOptionalLink(links.facebook, customer.facebook);
+    setOptionalLink(links.maps, customer.maps);
+    setOptionalLink(links.channel, customer.whatsapp_channel);
 
-    const pdfLink = document.getElementById("pdfLink");
-    const pdfLabel = document.getElementById("pdfButtonLabel");
-    if (pdfLink) {
-      const pdfAvailable = Boolean(customer.pdf_url && customer.pdf_enabled !== false);
-      pdfLink.classList.toggle("hidden", !pdfAvailable);
-      if (pdfAvailable) {
-        pdfLink.href = customer.pdf_url;
-        pdfLabel.textContent = customer.pdf_button_label || "الملف";
-      }
+    setOptionalLink(footer.whatsapp, customer.whatsapp);
+    setOptionalLink(footer.instagram, customer.instagram);
+    setOptionalLink(footer.tiktok, customer.tiktok);
+    setOptionalLink(footer.facebook, customer.facebook);
+    setOptionalLink(footer.channel, customer.whatsapp_channel);
+
+    document.title = `${nameAr} | Digital Profile`;
+    const description = document.querySelector('meta[name="description"]');
+    if (description) {
+      description.setAttribute("content", bioAr);
     }
-
-    setLink(footer.whatsapp, customer.whatsapp);
-    setLink(footer.instagram, customer.instagram);
-    setLink(footer.tiktok, customer.tiktok);
-    setLink(footer.facebook, customer.facebook);
-    setLink(footer.channel, customer.whatsapp_channel);
 
     const contactLink = document.getElementById("contactLink");
     contactLink.removeAttribute("download");
@@ -330,20 +399,20 @@ body.maintenance-active > *:not(#siteMaintenance){display:none !important}
     setLanguage(customer.default_language === "tr" ? "tr" : "ar");
   }
 
+  async function isCustomerPagesEnabled() {
+    const {data, error} = await supabaseClient
+      .from("site_settings")
+      .select("value_text")
+      .eq("key", "customer_pages_enabled")
+      .maybeSingle();
 
-async function isCustomerPagesEnabled(){
-  const {data,error} = await supabaseClient
-    .from("site_settings")
-    .select("value_text")
-    .eq("key","customer_pages_enabled")
-    .maybeSingle();
+    if (error) {
+      console.error("Global switch check failed:", error);
+      return true; // fail-open so a settings read issue does not hide live pages
+    }
 
-  if(error){
-    console.error("Global switch check failed:", error);
-    return true; // fail-open
+    return data?.value_text !== "false";
   }
-  return data?.value_text !== "false";
-}
 
   async function loadCustomer() {
     const slug = slugFromUrl();
@@ -351,22 +420,29 @@ async function isCustomerPagesEnabled(){
 
     if (slug) {
       const enabled = await isCustomerPagesEnabled();
+
       if (!enabled) {
         document.body.classList.add("maintenance-active");
         maintenance?.classList.add("show");
         return;
       }
+
       document.body.classList.remove("maintenance-active");
       maintenance?.classList.remove("show");
     } else {
+      // Main site is always available.
       document.body.classList.remove("maintenance-active");
       maintenance?.classList.remove("show");
     }
+    const portfolioSection = document.getElementById("portfolioSection");
 
     if (!slug) {
+      if (portfolioSection) portfolioSection.style.display = "";
       setLanguage(localStorage.getItem("onlineGiftsLanguage") || "ar");
       return;
     }
+
+    if (portfolioSection) portfolioSection.style.display = "none";
 
     const {data, error} = await supabaseClient
       .from("customers")
@@ -377,16 +453,20 @@ async function isCustomerPagesEnabled(){
 
     if (error || !data) {
       console.error("Customer load failed:", error || "Customer not found");
-      setLanguage(localStorage.getItem("onlineGiftsLanguage") || "ar");
+      document.body.classList.remove("customer-booting");
+      document.getElementById("customerBootGate")?.classList.remove("show");
+      document.title = "الصفحة غير موجودة | Online Gifts";
       return;
     }
 
     applyCustomer(data);
     document.title = `${data.name_ar || data.name_tr || "صفحة العميل"} | Online Gifts`;
-    // Count only the number of page visits; no visitor details are collected.
+    document.body.classList.remove("customer-booting");
+    document.getElementById("customerBootGate")?.classList.remove("show");
     supabaseClient.rpc("increment_customer_view",{p_slug:slug}).then(({error})=>{
       if(error) console.warn("Customer view counter failed:",error);
     });
+    document.getElementById("customerBootGate")?.classList.remove("show");
   }
 
   buttons.forEach((btn) => {
