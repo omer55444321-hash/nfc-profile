@@ -83,9 +83,6 @@ th{background:#faf8f0}
         <button class="primary" id="newBtn">+ إضافة عميل</button>
         <button class="secondary" id="refreshBtn">تحديث</button>
       </div>
-      <div id="appMsg" class="msg"></div>
-    </div>
-
       <div class="card" style="margin-top:14px;background:#fffaf0">
         <div class="topbar">
           <div>
@@ -97,6 +94,8 @@ th{background:#faf8f0}
         <div id="globalSwitchMsg" class="msg"></div>
       </div>
 
+      <div id="appMsg" class="msg"></div>
+    </div>
 
     <section id="editorCard" class="card hidden">
       <h2 id="editorTitle">إضافة عميل</h2>
@@ -175,7 +174,7 @@ th{background:#faf8f0}
           <input id="photo_file" type="file" accept="image/*">
           <div id="photo_preview" class="muted">لم يتم اختيار صورة</div>
         </div>
-</div>
+
         <div class="field full">
           <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
             <input id="show_photo" type="checkbox" checked style="width:18px;height:18px">
@@ -190,12 +189,10 @@ th{background:#faf8f0}
           <div id="pdf_status" class="muted">لم يتم اختيار ملف PDF.</div>
           <div id="pdf_current" class="muted"></div>
         </div>
-
         <div class="field">
           <label>اسم زر الـ PDF</label>
           <input id="pdf_button_label" placeholder="مثلاً: الكتالوج / أعمالنا / خدماتنا">
         </div>
-
         <div class="field">
           <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
             <input id="pdf_enabled" type="checkbox" checked style="width:18px;height:18px">
@@ -217,7 +214,7 @@ th{background:#faf8f0}
 
       <div id="fillLinkBox" class="card hidden" style="margin-top:16px;background:#fbfaf5">
         <h2 style="margin-bottom:8px">رابط تعبئة بيانات العميل</h2>
-        <div class="muted">أرسله للعميل. يمكن استخدام الرابط مرتين، وتظهر البيانات السابقة عند العودة.</div>
+        <div class="muted">أرسله للعميل ليملأ بياناته مرة واحدة.</div>
         <div style="display:flex;gap:8px;align-items:stretch;margin-top:10px;flex-wrap:wrap">
           <input id="fillLink" readonly style="flex:1;min-width:260px">
           <button class="secondary" id="copyFillLinkBtn" type="button">نسخ الرابط</button>
@@ -288,10 +285,6 @@ function clearMsg(id){
   el.classList.remove("show");
 }
 
-function buildShareLink(slug){
-  return `https://ktlqactpljbnuwqukgiy.supabase.co/functions/v1/swift-responder?slug=${encodeURIComponent(slug)}`;
-}
-
 function buildSiteLink(slug){
   const base = window.location.origin + window.location.pathname.replace(/admin\.html$/,"");
   return `${base}?client=${encodeURIComponent(slug)}`;
@@ -299,7 +292,7 @@ function buildSiteLink(slug){
 
 function showSiteLink(slug){
   if(!slug) return;
-  const url = buildShareLink(slug);
+  const url = buildSiteLink(slug);
   $("siteLink").value = url;
   $("siteLinkBox").classList.remove("hidden");
 }
@@ -381,36 +374,27 @@ async function uploadPDF(file, slug){
   if(!file) return null;
   if(file.type !== "application/pdf") throw new Error("الملف يجب أن يكون PDF.");
   if(file.size > 25 * 1024 * 1024) throw new Error("حجم ملف PDF يجب ألا يتجاوز 25MB.");
-
   const path = `${slug}/customer-file.pdf`;
-  const {error} = await client.storage
-    .from("customer-files")
-    .upload(path, file, {upsert:true, contentType:"application/pdf"});
+  const {error}=await client.storage.from("customer-files").upload(
+    path,file,{upsert:true,contentType:"application/pdf"}
+  );
   if(error) throw error;
-
   return client.storage.from("customer-files").getPublicUrl(path).data.publicUrl;
 }
-
 async function removeCustomerPDF(slug){
   if(!slug) return;
-  const {error} = await client.storage
-    .from("customer-files")
-    .remove([`${slug}/customer-file.pdf`]);
-  if(error && !String(error.message || "").toLowerCase().includes("not found")) throw error;
+  const {error}=await client.storage.from("customer-files").remove([`${slug}/customer-file.pdf`]);
+  if(error && !String(error.message||"").toLowerCase().includes("not found")) throw error;
 }
-
 $("pdf_file").addEventListener("change",()=>{
-  const file = $("pdf_file").files?.[0];
-  if(!file){
-    $("pdf_status").textContent = "لم يتم اختيار ملف PDF.";
+  const file=$("pdf_file").files?.[0];
+  if(!file){ $("pdf_status").textContent="لم يتم اختيار ملف PDF."; return; }
+  if(file.type!=="application/pdf"){
+    $("pdf_file").value="";
+    $("pdf_status").textContent="الملف يجب أن يكون PDF.";
     return;
   }
-  if(file.type !== "application/pdf"){
-    $("pdf_file").value = "";
-    $("pdf_status").textContent = "الملف يجب أن يكون PDF.";
-    return;
-  }
-  $("pdf_status").textContent = `جاهز للرفع: ${file.name}`;
+  $("pdf_status").textContent=`جاهز للرفع: ${file.name}`;
 });
 
 function generateSlug(){
@@ -447,13 +431,13 @@ async function getCustomerPagesEnabled(){
     .select("value_text")
     .eq("key","customer_pages_enabled")
     .maybeSingle();
+
   if(error) throw error;
   return data?.value_text !== "false";
 }
 
 async function renderGlobalSwitch(){
   const btn = $("globalPagesToggle");
-  if(!btn) return;
   try{
     const enabled = await getCustomerPagesEnabled();
     btn.textContent = enabled ? "إيقاف صفحات العملاء" : "تشغيل صفحات العملاء";
@@ -462,15 +446,15 @@ async function renderGlobalSwitch(){
   }catch(error){
     btn.textContent = "تعذر التحقق";
     btn.className = "secondary";
-    showMsg("globalSwitchMsg","تعذر قراءة حالة صفحات العملاء: " + error.message);
+    showMsg("globalSwitchMsg","تعذر قراءة حالة الصفحات: " + error.message);
   }
 }
 
-async function setGlobalCustomerPages(){
+$("globalPagesToggle").addEventListener("click", async ()=>{
   const button = $("globalPagesToggle");
-  if(!button) return;
   const current = button.dataset.enabled === "true";
   const nextValue = current ? "false" : "true";
+
   const ok = window.confirm(
     current
       ? "هل تريد إيقاف جميع صفحات العملاء مؤقتًا؟"
@@ -480,13 +464,17 @@ async function setGlobalCustomerPages(){
 
   const {error} = await client
     .from("site_settings")
-    .update({value_text:nextValue,updated_at:new Date().toISOString()})
+    .update({
+      value_text: nextValue,
+      updated_at: new Date().toISOString()
+    })
     .eq("key","customer_pages_enabled");
 
   if(error){
     showMsg("globalSwitchMsg","تعذر تغيير الحالة: " + error.message);
     return;
   }
+
   showMsg(
     "globalSwitchMsg",
     nextValue === "true"
@@ -494,12 +482,9 @@ async function setGlobalCustomerPages(){
       : "تم إيقاف جميع صفحات العملاء مؤقتًا.",
     true
   );
-  await renderGlobalSwitch();
-}
 
-if($("globalPagesToggle")){
-  $("globalPagesToggle").addEventListener("click", setGlobalCustomerPages);
-}
+  await renderGlobalSwitch();
+});
 
 async function requireSession(){
   const {data:{session}} = await client.auth.getSession();
@@ -514,6 +499,14 @@ async function requireSession(){
     $("app").classList.add("hidden");
   }
 }
+
+
+document.addEventListener("click", (event)=>{
+  const btn = event.target.closest('button[data-edit-id]');
+  if(btn){
+    editCustomer(btn.dataset.editId);
+  }
+});
 
 async function loadCustomers(){
   clearMsg("appMsg");
@@ -565,7 +558,7 @@ function renderCustomers(){
       <td>${row.fill_token ? (Number(row.fill_uses || (row.fill_used ? 1 : 0)) >= 2 ? '<span class="badge active">2/2</span>' : `<span class="badge inactive">${Number(row.fill_uses || 0)}/2</span>`) : '<span class="badge inactive">غير منشأ</span>'}</td>
       <td><span class="badge active">${Number(row.page_views || 0)}</span></td>
       <td>
-        <button class="secondary" onclick="editCustomer('${row.id}')">تعديل</button>
+        <button class="secondary" data-edit-id="${row.id}" onclick="editCustomer('${row.id}');return false;">تعديل</button>
         <button class="${row.is_active ? "danger" : "ok"}" onclick="toggleCustomer('${row.id}', ${row.is_active})">
           ${row.is_active ? "إيقاف" : "تفعيل"}
         </button>
@@ -594,12 +587,17 @@ async function editCustomer(id){
 
   editingId = id;
   $("editorTitle").textContent = "تعديل العميل";
+  $("editorCard").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
 
   Object.keys({
-    name_ar:1,name_tr:1,slug:1,bio_ar:1,bio_tr:1,whatsapp:1,
+    name_ar:1,name_tr:1,bio_ar:1,bio_tr:1,whatsapp:1,
     instagram:1,tiktok:1,facebook:1,maps:1,whatsapp_channel:1,
     phone:1,photo_url:1
-  }).forEach(key=>$(key).value = data[key] || "");
+  }).forEach(key=>{
+    const field = $(key);
+    if(field) field.value = data[key] || "";
+  });
 
   $("photo_preview").innerHTML = data.photo_url ? `<img class="file-preview" src="${escapeHtml(data.photo_url)}" alt="">` : "";
 
@@ -628,6 +626,7 @@ async function editCustomer(id){
 }
 
 
+window.editCustomer = editCustomer;
 async function removeFolderFiles(folder){
   if(!folder) return;
 
@@ -693,8 +692,9 @@ async function deleteCustomer(id){
   }
 }
 
+
 function openCustomerPage(slug){
-  const url = buildShareLink(slug);
+  const url = buildSiteLink(slug);
   window.open(url, "_blank", "noopener");
 }
 
@@ -886,15 +886,45 @@ $("saveBtn").addEventListener("click", async ()=>{
       const fillUrl = `${window.location.origin}${window.location.pathname.replace(/admin\.html$/,"")}fill.html?token=${encodeURIComponent(savedRow.fill_token)}`;
       $("fillLink").value = fillUrl;
       $("fillLinkBox").classList.remove("hidden");
-      const uses = Number(savedRow.fill_uses || (savedRow.fill_used ? 1 : 0));
-      $("fillStatus").textContent = uses >= 2
-        ? "تم استخدام الرابط مرتين — لم يعد متاحًا للتعبئة."
-        : `تم استخدام الرابط ${uses}/2${savedRow.fill_expires_at ? ` — صالح حتى ${new Date(savedRow.fill_expires_at).toLocaleString("ar-TR")}` : ""}`;
+      $("fillStatus").textContent = savedRow.fill_used
+        ? "تم استخدام الرابط."
+        : (savedRow.fill_expires_at ? `صالح حتى: ${new Date(savedRow.fill_expires_at).toLocaleString("ar-TR")}` : "الرابط صالح حتى يتم استخدامه.");
     }
 
-    showMsg("appMsg", editingId ? "تم تعديل العميل والصورة بنجاح" : "تمت إضافة العميل — رابط الموقع ورابط تعبئة البيانات جاهزان", true);
-    $("editorCard").classList.remove("hidden");
+    const wasEditing = Boolean(editingId);
+
+    if (wasEditing && savedRow) {
+      const i = customersCache.findIndex(r => r.id === editingId);
+      if (i !== -1) {
+        customersCache[i] = {
+          ...customersCache[i],
+          ...payload,
+          slug: savedRow.slug,
+          fill_token: savedRow.fill_token,
+          fill_used: savedRow.fill_used,
+          fill_expires_at: savedRow.fill_expires_at
+        };
+      }
+    }
+
     await loadCustomers();
+    renderCustomers();
+
+    showMsg(
+      "appMsg",
+      wasEditing
+        ? "تم تعديل العميل بنجاح وتحديث القائمة مباشرة"
+        : "تمت إضافة العميل — رابط الموقع ورابط تعبئة البيانات جاهزان",
+      true
+    );
+
+    if (wasEditing) {
+      $("editorCard").classList.add("hidden");
+      window.scrollTo({top:0,behavior:"smooth"});
+      editingId = null;
+    } else {
+      $("editorCard").classList.remove("hidden");
+    }
   }catch(error){
     showMsg("appMsg","تعذر الحفظ أو رفع الصورة: " + error.message);
   }
