@@ -49,6 +49,28 @@ body.customer-booting > *:not(#customerBootGate){visibility:hidden !important}
 body.customer-page-mode footer{display:none !important}
 </style>
 
+<style>
+/* PDF button: match the existing premium palette and remain readable */
+.link.pdf{
+  background:linear-gradient(135deg,#b58a18 0%,#d8b24a 55%,#9c7310 100%) !important;
+  color:#17110a !important;
+  border:1px solid rgba(255,214,99,.85) !important;
+  box-shadow:0 8px 20px rgba(122,86,7,.18) !important;
+}
+.link.pdf .link-text,
+.link.pdf b,
+.link.pdf small,
+.link.pdf .icon,
+.link.pdf .arrow{
+  color:#17110a !important;
+}
+.link.pdf small{opacity:.72}
+.link.pdf:hover{
+  filter:brightness(1.05);
+  transform:translateY(-1px);
+}
+</style>
+<style>.link.hidden{display:none !important}</style>
 </head>
 
 <body>
@@ -339,6 +361,33 @@ body.customer-page-mode footer{display:none !important}
     setOptionalLink(links.facebook, customer.facebook);
     setOptionalLink(links.maps, customer.maps);
     setOptionalLink(links.channel, customer.whatsapp_channel);
+
+    // PDF: show only when this customer actually has a PDF enabled.
+    const pdfLink = document.getElementById("pdfLink");
+    const pdfLabel = document.getElementById("pdfButtonLabel");
+    if (pdfLink) {
+      const hasPdf = Boolean(
+        String(customer.pdf_url || "").trim() &&
+        customer.pdf_enabled === true
+      );
+
+      if (hasPdf) {
+        pdfLink.classList.remove("hidden");
+        pdfLink.style.display = "";
+        pdfLink.href = customer.pdf_url;
+        pdfLink.target = "_blank";
+        pdfLink.rel = "noopener";
+        if (pdfLabel) {
+          pdfLabel.textContent = customer.pdf_button_label || "الملف";
+        }
+      } else {
+        pdfLink.classList.add("hidden");
+        pdfLink.style.display = "none";
+        pdfLink.removeAttribute("href");
+        pdfLink.removeAttribute("target");
+        pdfLink.removeAttribute("rel");
+      }
+    }
 
     setOptionalLink(footer.whatsapp, customer.whatsapp);
     setOptionalLink(footer.instagram, customer.instagram);
