@@ -45,7 +45,8 @@ body.maintenance-active > *:not(#siteMaintenance){
   animation:customerBootSpin .8s linear infinite;margin:0 auto 14px;
 }
 @keyframes customerBootSpin{to{transform:rotate(360deg)}}
-body.customer-booting > *:not(#customerBootGate){visibility:hidden !important}
+body.customer-booting > *:not(#customerBootGate):not(#siteMaintenance){visibility:hidden !important}
+body.customer-booting #siteMaintenance.show{visibility:visible !important}
 body.customer-page-mode footer{display:none !important}
 </style>
 
@@ -71,6 +72,16 @@ body.customer-page-mode footer{display:none !important}
 }
 </style>
 <style>.link.hidden{display:none !important}</style>
+<style>
+body.maintenance-active #siteMaintenance{
+  display:grid !important;
+  visibility:visible !important;
+  z-index:100001 !important;
+}
+body.maintenance-active #customerBootGate{
+  display:none !important;
+}
+</style>
 </head>
 
 <body>
