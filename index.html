@@ -83,77 +83,110 @@ body.maintenance-active #customerBootGate{
 }
 </style>
 
-<style>
+<style id="customer-cover-layout">
 .link.website.hidden{display:none!important}
+
+/* Keep the original hero dimensions, buttons, and language switch. */
 body.customer-cover-active .hero{
   position:relative;
   overflow:hidden;
   background:#111 !important;
 }
+
+/* Customer cover occupies only the upper part, then fades into the original black hero. */
 body.customer-cover-active .hero::before{
   content:"";
   position:absolute;
-  left:0;right:0;top:0;
-  height:64%;
+  inset:0 0 auto 0;
+  height:60%;
   z-index:0;
   pointer-events:none;
   background:
     linear-gradient(to bottom,
       rgba(17,17,17,0) 0%,
-      rgba(17,17,17,0) 52%,
-      rgba(17,17,17,.10) 61%,
-      rgba(17,17,17,.56) 80%,
-      rgba(17,17,17,1) 100%),
+      rgba(17,17,17,0) 50%,
+      rgba(17,17,17,.14) 66%,
+      rgba(17,17,17,.68) 87%,
+      rgba(17,17,17,1) 100%
+    ),
     var(--customer-cover-url);
   background-position:center top;
   background-size:cover;
   background-repeat:no-repeat;
-  border-radius:inherit;
 }
 
-/* Only place existing hero layers above the new cover; do not change their geometry. */
+/* Keep decorative original waves and language switch above the cover. */
 body.customer-cover-active .hero .gold-wave,
-body.customer-cover-active .hero .lang-switch,
-body.customer-cover-active .hero .profile{
-  z-index:3;
+body.customer-cover-active .hero .lang-switch{
+  position:relative;
+  z-index:30;
 }
 
-/* Avatar only: large, lower-right, overlapping the cover/black boundary. */
+/* Profile becomes the overlay container only on customer pages with a cover. */
+body.customer-cover-active .hero .profile{
+  position:absolute !important;
+  inset:0 !important;
+  z-index:10 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:flex-end !important;
+  padding:0 26px 52px !important;
+  margin:0 !important;
+}
+
+/* Avatar: large, lower-right, crossing the cover/black boundary. */
 body.customer-cover-active .hero .profile .avatar{
   position:absolute !important;
-  right:5.5% !important;
+  right:6% !important;
   left:auto !important;
   top:auto !important;
-  bottom:26px !important;
-  width:210px !important;
-  height:210px !important;
+  bottom:24px !important;
+  width:205px !important;
+  height:205px !important;
   margin:0 !important;
-  object-fit:cover;
-  z-index:8 !important;
+  object-fit:cover !important;
+  z-index:40 !important;
 }
 
-/* Lift only the text group slightly; avatar and language switch stay fixed. */
+/* Text stays centered in the black lower area. */
 body.customer-cover-active .hero #profileName{
-  transform:translateY(-18px);
+  position:relative !important;
+  z-index:20 !important;
+  margin:0 0 4px !important;
 }
-body.customer-cover-active .hero #profileSubtitle,
-body.customer-cover-active .hero #profileBio,
+body.customer-cover-active .hero .subtitle{
+  position:relative !important;
+  z-index:20 !important;
+  margin:0 0 8px !important;
+}
+body.customer-cover-active .hero #profileBio{
+  position:relative !important;
+  z-index:20 !important;
+  margin:0 0 7px !important;
+}
 body.customer-cover-active .hero .gold-line{
-  transform:translateY(-14px);
+  position:relative !important;
+  z-index:20 !important;
+  margin:0 !important;
+}
+
+/* Original language switch location is not changed. */
+body.customer-cover-active .hero .lang-switch{
+  transform:none !important;
 }
 
 @media(max-width:650px){
-  body.customer-cover-active .hero::before{height:62%}
+  body.customer-cover-active .hero::before{height:58%}
+  body.customer-cover-active .hero .profile{
+    padding:0 18px 38px !important;
+  }
   body.customer-cover-active .hero .profile .avatar{
     right:5% !important;
-    bottom:20px !important;
-    width:160px !important;
-    height:160px !important;
+    bottom:18px !important;
+    width:155px !important;
+    height:155px !important;
   }
-  body.customer-cover-active .hero #profileName{transform:translateY(-12px)}
-  body.customer-cover-active .hero #profileSubtitle,
-  body.customer-cover-active .hero #profileBio,
-  body.customer-cover-active .hero .gold-line{transform:translateY(-9px)}
 }
 </style>
 
