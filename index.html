@@ -84,80 +84,76 @@ body.maintenance-active #customerBootGate{
 </style>
 
 <style>
-.link.website.hidden{display:none !important}
-
+.link.website.hidden{display:none!important}
 body.customer-cover-active .hero{
   position:relative;
   overflow:hidden;
-  isolation:isolate;
-  background:#111;
+  background:#111 !important;
 }
-
-/* Cover image occupies the upper part only, with a soft fade into the existing black hero. */
 body.customer-cover-active .hero::before{
   content:"";
   position:absolute;
-  left:0;
-  right:0;
-  top:0;
-  height:68%;
+  left:0;right:0;top:0;
+  height:64%;
   z-index:0;
+  pointer-events:none;
   background:
-    linear-gradient(
-      to bottom,
+    linear-gradient(to bottom,
       rgba(17,17,17,0) 0%,
-      rgba(17,17,17,0) 48%,
-      rgba(17,17,17,.10) 54%,
-      rgba(17,17,17,.52) 66%,
-      rgba(17,17,17,.94) 92%,
-      rgba(17,17,17,1) 100%
-    ),
+      rgba(17,17,17,0) 52%,
+      rgba(17,17,17,.10) 61%,
+      rgba(17,17,17,.56) 80%,
+      rgba(17,17,17,1) 100%),
     var(--customer-cover-url);
-  background-repeat:no-repeat;
   background-position:center top;
   background-size:cover;
-  clip-path:ellipse(112% 92% at 50% 0%);
+  background-repeat:no-repeat;
+  border-radius:inherit;
 }
 
-/* Keep the original content/layout stacking intact. */
-body.customer-cover-active .hero > *{
-  position:relative;
-  z-index:2;
-}
+/* Only place existing hero layers above the new cover; do not change their geometry. */
+body.customer-cover-active .hero .gold-wave,
+body.customer-cover-active .hero .lang-switch,
 body.customer-cover-active .hero .profile{
-  position:static !important;
+  z-index:3;
 }
 
-/* The avatar is moved independently, so the name/subtitle/bio do NOT move. */
+/* Avatar only: large, lower-right, overlapping the cover/black boundary. */
 body.customer-cover-active .hero .profile .avatar{
   position:absolute !important;
-  right:5% !important;
+  right:5.5% !important;
   left:auto !important;
   top:auto !important;
-  bottom:28px !important;
+  bottom:26px !important;
+  width:210px !important;
+  height:210px !important;
   margin:0 !important;
-  width:clamp(160px,22vw,340px) !important;
-  height:clamp(160px,22vw,340px) !important;
   object-fit:cover;
   z-index:8 !important;
 }
 
-/* Do not let the language switch get pushed by the cover/avatar. */
-body.customer-cover-active .hero .lang-switch{
-  z-index:10 !important;
+/* Lift only the text group slightly; avatar and language switch stay fixed. */
+body.customer-cover-active .hero #profileName{
+  transform:translateY(-18px);
+}
+body.customer-cover-active .hero #profileSubtitle,
+body.customer-cover-active .hero #profileBio,
+body.customer-cover-active .hero .gold-line{
+  transform:translateY(-14px);
 }
 
 @media(max-width:650px){
-  body.customer-cover-active .hero::before{
-    height:64%;
-    background-position:center top;
-  }
+  body.customer-cover-active .hero::before{height:62%}
   body.customer-cover-active .hero .profile .avatar{
     right:5% !important;
-    bottom:22px !important;
-    width:clamp(145px,24vw,210px) !important;
-    height:clamp(145px,24vw,210px) !important;
+    bottom:20px !important;
+    width:160px !important;
+    height:160px !important;
   }
+  body.customer-cover-active .hero #profileName{transform:translateY(-12px)}
+  body.customer-cover-active .hero #profileSubtitle,
+  body.customer-cover-active .hero #profileBio,
+  body.customer-cover-active .hero .gold-line{transform:translateY(-9px)}
 }
 </style>
 
@@ -460,9 +456,8 @@ body.customer-cover-active .hero .lang-switch{
     setOptionalLink(links.facebook, customer.facebook);
     setOptionalLink(links.maps, customer.maps);
     setOptionalLink(links.channel, customer.whatsapp_channel);
-
     const channelLabel = document.getElementById("channelButtonLabel");
-    if (channelLabel) {
+    if(channelLabel){
       const label = (customer.whatsapp_channel_label || "").trim() || "قناتنا على واتساب";
       channelLabel.dataset.ar = label;
       channelLabel.dataset.tr = label;
@@ -470,15 +465,14 @@ body.customer-cover-active .hero .lang-switch{
     }
 
     const websiteLink = document.getElementById("websiteLink");
-    if (websiteLink) {
+    if(websiteLink){
       const website = (customer.website_url || "").trim();
-      websiteLink.classList.toggle("hidden", !website);
       websiteLink.style.display = website ? "" : "none";
-      if (website) {
+      if(website){
         websiteLink.href = website;
         websiteLink.target = "_blank";
         websiteLink.rel = "noopener";
-      } else {
+      }else{
         websiteLink.removeAttribute("href");
         websiteLink.removeAttribute("target");
         websiteLink.removeAttribute("rel");
@@ -488,14 +482,12 @@ body.customer-cover-active .hero .lang-switch{
     const coverUrl = (customer.cover_url || "").trim();
     const hero = document.querySelector(".hero");
     document.body.classList.toggle("customer-cover-active", Boolean(coverUrl));
-    if (hero && coverUrl) {
-      hero.style.setProperty(
-        "--customer-cover-url",
-        `url("${coverUrl.replace(/"/g, '\"')}")`
-      );
-    } else if (hero) {
+    if(hero && coverUrl){
+      hero.style.setProperty("--customer-cover-url", `url("${coverUrl.replace(/"/g,'\\"')}")`);
+    }else if(hero){
       hero.style.removeProperty("--customer-cover-url");
     }
+
 
     // PDF: show only when this customer actually has a PDF enabled.
     const pdfLink = document.getElementById("pdfLink");
