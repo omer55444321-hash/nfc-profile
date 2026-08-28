@@ -26,6 +26,16 @@ button{font:inherit;border:0;border-radius:10px;padding:12px 17px;font-weight:80
 .hidden{display:none!important}
 @media(max-width:650px){.grid{grid-template-columns:1fr}.full{grid-column:auto}}
 </style>
+
+<style>
+.optional-note{
+  font-size:11px;
+  font-weight:600;
+  color:#999;
+  margin-inline-start:4px;
+}
+</style>
+
 </head>
 <body>
 <div class="wrap">
@@ -49,13 +59,15 @@ button{font:inherit;border:0;border-radius:10px;padding:12px 17px;font-weight:80
       <div class="field full"><label>الوصف بالعربي</label><textarea id="bio_ar"></textarea></div>
       <div class="field full"><label>الوصف بالتركي</label><textarea id="bio_tr"></textarea></div>
 
-      <div class="field"><label>WhatsApp</label><input id="whatsapp" placeholder="أرجو وضع رابط رقم الواتساب هنا"></div>
-      <div class="field"><label>Instagram</label><input id="instagram" placeholder="أرجو وضع رابط حساب الإنستغرام هنا"></div>
-      <div class="field"><label>TikTok</label><input id="tiktok" placeholder="أرجو وضع رابط حساب التيك توك هنا"></div>
-      <div class="field"><label>Facebook</label><input id="facebook" placeholder="أرجو وضع رابط صفحة الفيسبوك هنا"></div>
-      <div class="field"><label>Google Maps</label><input id="maps" placeholder="أرجو وضع رابط موقعك على الخريطة هنا"></div>
-      <div class="field"><label>قناة WhatsApp</label><input id="whatsapp_channel" placeholder="أرجو وضع رابط قناة الواتساب هنا"></div>
-      <div class="field"><label>رقم الهاتف</label><input id="phone" placeholder="أرجو وضع رقم الهاتف هنا"></div>
+      <div class="field"><label>رابط WhatsApp <span class="optional-note">(اختياري)</span></label><input id="whatsapp" placeholder="ضع رابط الواتساب هنا"></div>
+      <div class="field"><label>رابط Instagram <span class="optional-note">(اختياري)</span></label><input id="instagram" placeholder="ضع رابط حساب الإنستغرام هنا"></div>
+      <div class="field"><label>رابط TikTok <span class="optional-note">(اختياري)</span></label><input id="tiktok" placeholder="ضع رابط حساب التيك توك هنا"></div>
+      <div class="field"><label>رابط Facebook <span class="optional-note">(اختياري)</span></label><input id="facebook" placeholder="ضع رابط صفحة الفيسبوك هنا"></div>
+      <div class="field"><label>رابط Google Maps <span class="optional-note">(اختياري)</span></label><input id="maps" placeholder="ضع رابط موقعك على الخريطة هنا"></div>
+      <div class="field"><label>رابط قناة WhatsApp أو كتالوج WhatsApp <span class="optional-note">(اختياري)</span></label><input id="whatsapp_channel" placeholder="ضع رابط قناة الواتساب هنا"></div>
+      <div class="field"><label>اسم زر قناة WhatsApp <span class="optional-note">(اختياري)</span></label><input id="whatsapp_channel_label" placeholder="مثلاً: كتالوج الواتساب"></div>
+      <div class="field"><label>رابط موقعنا الإلكتروني <span class="optional-note">(اختياري)</span></label><input id="website_url" placeholder="ضع رابط موقعك الإلكتروني هنا"></div>
+      <div class="field"><label>رقم الهاتف <span class="optional-note">(اختياري)</span></label><input id="phone" placeholder="أرجو وضع رقم الهاتف هنا"></div>
       <div class="field">
         <label>اللغة الافتراضية</label>
         <select id="default_language"><option value="ar">العربية</option><option value="tr">Türkçe</option></select>
@@ -96,7 +108,7 @@ async function findCustomer(){
   if(error || !data){ msg("هذا الرابط غير صالح أو تم استخدامه/انتهت صلاحيته."); return; }
 
   customer = data;
-  const keys=["name_ar","name_tr","bio_ar","bio_tr","whatsapp","instagram","tiktok","facebook","maps","whatsapp_channel","phone","default_language"];
+  const keys=["name_ar","name_tr","bio_ar","bio_tr","whatsapp","instagram","tiktok","facebook","maps","whatsapp_channel","whatsapp_channel_label","website_url","phone","default_language"];
   keys.forEach(key=>{ const el=$(key); if(el) el.value = data[key] ?? ""; });
   $("show_photo").checked = data.show_photo !== false;
   if(data.photo_url && data.show_photo){
@@ -147,6 +159,8 @@ $("submitBtn").addEventListener("click",async()=>{
       facebook:$("facebook").value.trim()||null,
       maps:$("maps").value.trim()||null,
       whatsapp_channel:$("whatsapp_channel").value.trim()||null,
+      whatsapp_channel_label:$("whatsapp_channel_label").value.trim()||null,
+      website_url:$("website_url").value.trim()||null,
       phone:$("phone").value.trim()||null,
       default_language:$("default_language").value,
       show_photo:$("show_photo").checked,
