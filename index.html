@@ -84,7 +84,7 @@ body.maintenance-active #customerBootGate{
 </style>
 
 <style>
-/* Customer cover — preserves the original hero layout; only the background/profile position changes. */
+/* Customer cover — preserve the original hero layout and use the cover only in its upper visual area. */
 body.customer-cover-active .hero{
   position:relative;
   overflow:hidden;
@@ -93,58 +93,95 @@ body.customer-cover-active .hero{
     linear-gradient(
       to bottom,
       rgba(17,17,17,0) 0%,
-      rgba(17,17,17,0) 38%,
-      rgba(17,17,17,.08) 45%,
-      rgba(17,17,17,.62) 58%,
-      rgba(17,17,17,.96) 69%,
-      rgba(17,17,17,1) 76%
+      rgba(17,17,17,0) 52%,
+      rgba(17,17,17,.22) 58%,
+      rgba(17,17,17,.78) 66%,
+      rgba(17,17,17,1) 73%
     ),
     var(--customer-cover-url);
   background-repeat:no-repeat;
   background-position:center top;
-  background-size:100% 72%;
+  background-size:100% 62%;
 }
 
-body.customer-cover-active .hero .profile{
-  position:relative;
-  z-index:3;
-  min-height:100%;
-}
-
-body.customer-cover-active .hero .profile .avatar{
-  position:absolute !important;
-  right:24px !important;
-  left:auto !important;
-  top:auto !important;
-  bottom:-10px !important;
-  width:210px !important;
-  height:210px !important;
-  margin:0 !important;
-  object-fit:cover;
-  z-index:20;
-}
-
-/* Keep the original language switch position and styling untouched. */
+/* Keep the language selector exactly where the original design places it. */
 body.customer-cover-active .hero .lang-switch{
   position:relative;
   z-index:30;
 }
 
-/* Website button keeps the existing button system; only hidden until a URL exists. */
-.link.website.hidden{display:none !important}
+/* The customer's profile image becomes a large overlap at the lower-right. */
+body.customer-cover-active .hero .profile{
+  position:relative;
+  z-index:3;
+}
+
+/* Shift only the text group slightly left to make room for the overlapping avatar. */
+body.customer-cover-active .hero .profile h1,
+body.customer-cover-active .hero .profile .subtitle,
+body.customer-cover-active .hero .profile .bio,
+body.customer-cover-active .hero .profile .gold-line{
+  position:relative;
+  left:-10%;
+}
+
+body.customer-cover-active .hero .profile .avatar{
+  position:absolute !important;
+  right:7% !important;
+  left:auto !important;
+  top:auto !important;
+  bottom:-18px !important;
+  width:31% !important;
+  max-width:360px !important;
+  min-width:230px !important;
+  aspect-ratio:1/1;
+  height:auto !important;
+  margin:0 !important;
+  object-fit:cover;
+  z-index:40;
+}
+
+@media(max-width:850px){
+  body.customer-cover-active .hero{
+    background-size:100% 58%;
+  }
+  body.customer-cover-active .hero .profile h1,
+  body.customer-cover-active .hero .profile .subtitle,
+  body.customer-cover-active .hero .profile .bio,
+  body.customer-cover-active .hero .profile .gold-line{
+    left:-6%;
+  }
+  body.customer-cover-active .hero .profile .avatar{
+    right:4% !important;
+    bottom:-12px !important;
+    width:28% !important;
+    min-width:170px !important;
+    max-width:260px !important;
+  }
+}
 
 @media(max-width:650px){
   body.customer-cover-active .hero{
-    background-size:auto 70%;
+    background-size:100% 55%;
     background-position:center top;
   }
+  body.customer-cover-active .hero .profile h1,
+  body.customer-cover-active .hero .profile .subtitle,
+  body.customer-cover-active .hero .profile .bio,
+  body.customer-cover-active .hero .profile .gold-line{
+    left:0;
+  }
   body.customer-cover-active .hero .profile .avatar{
-    right:14px !important;
+    right:4% !important;
     bottom:-8px !important;
-    width:168px !important;
-    height:168px !important;
+    width:30% !important;
+    min-width:130px !important;
+    max-width:190px !important;
   }
 }
+
+/* Website button remains hidden until a website URL exists. */
+.link.website.hidden{display:none !important}
 </style>
 
 </head>
