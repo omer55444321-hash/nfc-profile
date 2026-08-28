@@ -84,56 +84,70 @@ body.maintenance-active #customerBootGate{
 </style>
 
 <style>
+/* Customer cover: use the existing hero as-is, add only a controlled cover layer. */
 body.customer-cover-active .hero{
   position:relative;
-  overflow:hidden;
+  background-color:#111;
   background-image:
     linear-gradient(
       to bottom,
-      rgba(0,0,0,.12) 0%,
-      rgba(0,0,0,.28) 42%,
-      rgba(0,0,0,.82) 100%
+      rgba(17,17,17,0) 0%,
+      rgba(17,17,17,0) 42%,
+      rgba(17,17,17,.18) 50%,
+      rgba(17,17,17,.96) 68%,
+      rgba(17,17,17,1) 78%
     ),
     var(--customer-cover-url);
-  background-size:cover;
-  background-position:center;
+  background-repeat:no-repeat;
+  background-position:center top;
+  background-size:100% 72%;
 }
-body.customer-cover-active .hero::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(to bottom,rgba(0,0,0,0) 48%,rgba(0,0,0,.30) 72%,rgba(0,0,0,.72) 100%);
-  pointer-events:none;
+
+/* Keep the existing language control in its original position/shape. */
+body.customer-cover-active .hero .lang-switch{
+  z-index:10;
 }
-body.customer-cover-active .hero > *{
+
+/* Move only the customer avatar to the lower-right, keeping it large. */
+body.customer-cover-active .hero .profile{
   position:relative;
   z-index:2;
 }
-body.customer-cover-active .hero .profile{
-  position:relative;
-  padding-bottom:88px;
-}
-body.customer-cover-active .hero .avatar{
+body.customer-cover-active .hero .profile .avatar{
   position:absolute !important;
   right:24px !important;
-  bottom:10px !important;
   left:auto !important;
   top:auto !important;
-  width:112px !important;
-  height:112px !important;
+  bottom:-6px !important;
+  width:168px !important;
+  height:168px !important;
+  margin:0 !important;
   object-fit:cover;
-  z-index:4;
+  z-index:20;
 }
-@media(max-width:650px){
-  body.customer-cover-active .hero .profile{padding-bottom:78px}
-  body.customer-cover-active .hero .avatar{
-    right:16px !important;
-    bottom:8px !important;
-    width:96px !important;
-    height:96px !important;
+
+/* Give the center text enough breathing room without moving the original text block. */
+body.customer-cover-active .hero .profile{
+  padding-bottom:42px;
+}
+
+@media (max-width:650px){
+  body.customer-cover-active .hero{
+    background-size:auto 66%;
+    background-position:center top;
+  }
+  body.customer-cover-active .hero .profile .avatar{
+    right:14px !important;
+    bottom:-4px !important;
+    width:138px !important;
+    height:138px !important;
+  }
+  body.customer-cover-active .hero .profile{
+    padding-bottom:36px;
   }
 }
 </style>
+
 </head>
 
 <body>
@@ -433,37 +447,6 @@ body.customer-cover-active .hero .avatar{
     setOptionalLink(links.facebook, customer.facebook);
     setOptionalLink(links.maps, customer.maps);
     setOptionalLink(links.channel, customer.whatsapp_channel);
-
-    const channelLabel = document.getElementById("channelButtonLabel");
-    if (channelLabel) {
-      const label = (customer.whatsapp_channel_label || "").trim() || "قناتنا على واتساب";
-      channelLabel.dataset.ar = label;
-      channelLabel.dataset.tr = label;
-      channelLabel.textContent = label;
-    }
-
-    const websiteLink = document.getElementById("websiteLink");
-    if (websiteLink) {
-      const website = (customer.website_url || "").trim();
-      websiteLink.classList.toggle("hidden", !website);
-      websiteLink.style.display = website ? "" : "none";
-      if (website) {
-        websiteLink.href = website;
-        websiteLink.target = "_blank";
-        websiteLink.rel = "noopener";
-      } else {
-        websiteLink.removeAttribute("href");
-      }
-    }
-
-    const hero = document.querySelector(".hero");
-    const hasCover = Boolean((customer.cover_url || "").trim());
-    document.body.classList.toggle("customer-cover-active", hasCover);
-    if (hasCover && hero) {
-      hero.style.setProperty("--customer-cover-url", `url("${String(customer.cover_url).replace(/"/g,'\\"')}")`);
-    } else if (hero) {
-      hero.style.removeProperty("--customer-cover-url");
-    }
 
     // PDF: show only when this customer actually has a PDF enabled.
     const pdfLink = document.getElementById("pdfLink");
