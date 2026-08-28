@@ -82,6 +82,58 @@ body.maintenance-active #customerBootGate{
   display:none !important;
 }
 </style>
+
+<style>
+body.customer-cover-active .hero{
+  position:relative;
+  overflow:hidden;
+  background-image:
+    linear-gradient(
+      to bottom,
+      rgba(0,0,0,.12) 0%,
+      rgba(0,0,0,.28) 42%,
+      rgba(0,0,0,.82) 100%
+    ),
+    var(--customer-cover-url);
+  background-size:cover;
+  background-position:center;
+}
+body.customer-cover-active .hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to bottom,rgba(0,0,0,0) 48%,rgba(0,0,0,.30) 72%,rgba(0,0,0,.72) 100%);
+  pointer-events:none;
+}
+body.customer-cover-active .hero > *{
+  position:relative;
+  z-index:2;
+}
+body.customer-cover-active .hero .profile{
+  position:relative;
+  padding-bottom:88px;
+}
+body.customer-cover-active .hero .avatar{
+  position:absolute !important;
+  right:24px !important;
+  bottom:10px !important;
+  left:auto !important;
+  top:auto !important;
+  width:112px !important;
+  height:112px !important;
+  object-fit:cover;
+  z-index:4;
+}
+@media(max-width:650px){
+  body.customer-cover-active .hero .profile{padding-bottom:78px}
+  body.customer-cover-active .hero .avatar{
+    right:16px !important;
+    bottom:8px !important;
+    width:96px !important;
+    height:96px !important;
+  }
+}
+</style>
 </head>
 
 <body>
@@ -213,8 +265,17 @@ body.maintenance-active #customerBootGate{
         <a class="link channel" id="channelLink" href="https://whatsapp.com/channel/0029VaaNlxi2UPBBkc38612Z" target="_blank" rel="noopener">
           <span class="icon">◉</span>
           <span class="link-text">
-            <b data-ar="قناتنا على واتساب" data-tr="WhatsApp Kanalımız">قناتنا على واتساب</b>
+            <b id="channelButtonLabel" data-ar="قناتنا على واتساب" data-tr="WhatsApp Kanalımız">قناتنا على واتساب</b>
             <small data-ar="تابع أحدث العروض والمنتجات" data-tr="En yeni kampanya ve ürünleri takip edin">تابع أحدث العروض والمنتجات</small>
+          </span>
+          <span class="arrow">‹</span>
+        </a>
+
+        <a class="link website hidden" id="websiteLink" href="#" target="_blank" rel="noopener">
+          <span class="icon">🌐</span>
+          <span class="link-text">
+            <b>موقعنا الإلكتروني</b>
+            <small data-ar="زوروا موقعنا الإلكتروني" data-tr="Web sitemizi ziyaret edin">زوروا موقعنا الإلكتروني</small>
           </span>
           <span class="arrow">‹</span>
         </a>
@@ -372,6 +433,37 @@ body.maintenance-active #customerBootGate{
     setOptionalLink(links.facebook, customer.facebook);
     setOptionalLink(links.maps, customer.maps);
     setOptionalLink(links.channel, customer.whatsapp_channel);
+
+    const channelLabel = document.getElementById("channelButtonLabel");
+    if (channelLabel) {
+      const label = (customer.whatsapp_channel_label || "").trim() || "قناتنا على واتساب";
+      channelLabel.dataset.ar = label;
+      channelLabel.dataset.tr = label;
+      channelLabel.textContent = label;
+    }
+
+    const websiteLink = document.getElementById("websiteLink");
+    if (websiteLink) {
+      const website = (customer.website_url || "").trim();
+      websiteLink.classList.toggle("hidden", !website);
+      websiteLink.style.display = website ? "" : "none";
+      if (website) {
+        websiteLink.href = website;
+        websiteLink.target = "_blank";
+        websiteLink.rel = "noopener";
+      } else {
+        websiteLink.removeAttribute("href");
+      }
+    }
+
+    const hero = document.querySelector(".hero");
+    const hasCover = Boolean((customer.cover_url || "").trim());
+    document.body.classList.toggle("customer-cover-active", hasCover);
+    if (hasCover && hero) {
+      hero.style.setProperty("--customer-cover-url", `url("${String(customer.cover_url).replace(/"/g,'\\"')}")`);
+    } else if (hero) {
+      hero.style.removeProperty("--customer-cover-url");
+    }
 
     // PDF: show only when this customer actually has a PDF enabled.
     const pdfLink = document.getElementById("pdfLink");
