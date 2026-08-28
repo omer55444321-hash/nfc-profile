@@ -82,7 +82,6 @@ body.maintenance-active #customerBootGate{
   display:none !important;
 }
 </style>
-<style>.link.website.hidden{display:none!important}</style>
 </head>
 
 <body>
@@ -214,20 +213,11 @@ body.maintenance-active #customerBootGate{
         <a class="link channel" id="channelLink" href="https://whatsapp.com/channel/0029VaaNlxi2UPBBkc38612Z" target="_blank" rel="noopener">
           <span class="icon">◉</span>
           <span class="link-text">
-            <b id="channelButtonLabel" data-ar="قناتنا على واتساب" data-tr="WhatsApp Kanalımız">قناتنا على واتساب</b>
+            <b data-ar="قناتنا على واتساب" data-tr="WhatsApp Kanalımız">قناتنا على واتساب</b>
             <small data-ar="تابع أحدث العروض والمنتجات" data-tr="En yeni kampanya ve ürünleri takip edin">تابع أحدث العروض والمنتجات</small>
           </span>
           <span class="arrow">‹</span>
         </a>
-        <a class="link website hidden" id="websiteLink" href="#" target="_blank" rel="noopener">
-          <span class="icon">🌐</span>
-          <span class="link-text">
-            <b>موقعنا الإلكتروني</b>
-            <small data-ar="زوروا موقعنا الإلكتروني" data-tr="Web sitemizi ziyaret edin">زوروا موقعنا الإلكتروني</small>
-          </span>
-          <span class="arrow">‹</span>
-        </a>
-
 
       </div>
 
@@ -371,30 +361,7 @@ body.maintenance-active #customerBootGate{
     document.getElementById("profilePhoto").src = customer.photo_url || "online-gifts-logo.png";
     document.getElementById("profilePhoto").alt = nameAr;
 
-    document.getElementById("contactSub").data
-    const channelLabel = document.getElementById("channelButtonLabel");
-    if(channelLabel){
-      const label = (customer.whatsapp_channel_label || "").trim() || "قناتنا على واتساب";
-      channelLabel.dataset.ar = label;
-      channelLabel.dataset.tr = label;
-      channelLabel.textContent = label;
-    }
-
-    const websiteLink = document.getElementById("websiteLink");
-    if(websiteLink){
-      const website = (customer.website_url || "").trim();
-      websiteLink.style.display = website ? "" : "none";
-      if(website){
-        websiteLink.href = website;
-        websiteLink.target = "_blank";
-        websiteLink.rel = "noopener";
-      }else{
-        websiteLink.removeAttribute("href");
-        websiteLink.removeAttribute("target");
-        websiteLink.removeAttribute("rel");
-      }
-    }
-set.ar =
+    document.getElementById("contactSub").dataset.ar =
       `احفظ بيانات ${nameAr}`;
     document.getElementById("contactSub").dataset.tr =
       `Kişilerinizde ${nameTr} bilgilerini kaydedin`;
