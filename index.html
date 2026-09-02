@@ -390,8 +390,21 @@ body.maintenance-active #customerBootGate{
       if (creditName) creditName.textContent = nameAr;
     }
         document.getElementById("profileSubtitle").textContent = "Digital Profile";
-    document.getElementById("profilePhoto").src = customer.photo_url || "online-gifts-logo.png";
-    document.getElementById("profilePhoto").alt = nameAr;
+
+    const profilePhoto = document.getElementById("profilePhoto");
+    const customerPhotoUrl = String(customer.photo_url || "").trim();
+    const shouldShowPhoto = customer.show_photo !== false && Boolean(customerPhotoUrl);
+
+    if (profilePhoto) {
+      profilePhoto.style.display = shouldShowPhoto ? "" : "none";
+      if (shouldShowPhoto) {
+        profilePhoto.src = customerPhotoUrl;
+        profilePhoto.alt = nameAr;
+      } else {
+        profilePhoto.removeAttribute("src");
+        profilePhoto.alt = "";
+      }
+    }
 
     document.getElementById("contactSub").dataset.ar =
       `احفظ بيانات ${nameAr}`;
