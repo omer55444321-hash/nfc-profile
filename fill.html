@@ -41,7 +41,7 @@ button{font:inherit;border:0;border-radius:10px;padding:12px 17px;font-weight:80
 <div class="wrap">
   <section class="card">
     <h1>تعبئة بيانات الصفحة</h1>
-    <div class="muted">يمكنك تعبئة بياناتك مرتين. عند العودة إلى نفس الرابط ستظهر بياناتك السابقة ويمكنك استكمال أو تعديل الناقص.</div>
+    <div class="muted">هذا رابط دائم. يمكنك العودة إليه وتعديل بياناتك في أي وقت.</div>
     <div id="msg" class="msg"></div><div id="remaining" class="muted" style="margin-top:8px"></div>
   </section>
 
@@ -67,6 +67,20 @@ button{font:inherit;border:0;border-radius:10px;padding:12px 17px;font-weight:80
       <div class="field"><label>رابط قناة WhatsApp أو كتالوج WhatsApp <span class="optional-note">(اختياري)</span></label><input id="whatsapp_channel" placeholder="ضع رابط قناة الواتساب هنا"></div>
       <div class="field"><label>اسم زر قناة WhatsApp <span class="optional-note">(اختياري)</span></label><input id="whatsapp_channel_label" placeholder="مثلاً: كتالوج الواتساب"></div>
       <div class="field"><label>رابط موقعنا الإلكتروني <span class="optional-note">(اختياري)</span></label><input id="website_url" placeholder="ضع رابط موقعك الإلكتروني هنا"></div>
+
+      <div class="field full">
+        <label style="font-size:15px">أزرار إضافية حسب الطلب <span class="optional-note">(اختياري)</span></label>
+        <div class="muted">مثال: X / Trendyol / Hepsiburada / متجرك. اكتب اسم الزر والرابط الذي تريد فتحه.</div>
+      </div>
+      <div class="field"><label>اسم الزر الإضافي 1</label><input id="custom_button_1_label" placeholder="مثلاً: Trendyol"></div>
+      <div class="field"><label>رابط الزر الإضافي 1</label><input id="custom_button_1_url" placeholder="https://..."></div>
+      <div class="field"><label>اسم الزر الإضافي 2</label><input id="custom_button_2_label" placeholder="مثلاً: Hepsiburada"></div>
+      <div class="field"><label>رابط الزر الإضافي 2</label><input id="custom_button_2_url" placeholder="https://..."></div>
+      <div class="field"><label>اسم الزر الإضافي 3</label><input id="custom_button_3_label" placeholder="مثلاً: X"></div>
+      <div class="field"><label>رابط الزر الإضافي 3</label><input id="custom_button_3_url" placeholder="https://..."></div>
+      <div class="field"><label>اسم الزر الإضافي 4</label><input id="custom_button_4_label" placeholder="مثلاً: متجرنا"></div>
+      <div class="field"><label>رابط الزر الإضافي 4</label><input id="custom_button_4_url" placeholder="https://..."></div>
+
       <div class="field"><label>رقم الهاتف <span class="optional-note">(اختياري)</span></label><input id="phone" placeholder="أرجو وضع رقم الهاتف هنا"></div>
       <div class="field">
         <label>اللغة الافتراضية</label>
@@ -105,18 +119,22 @@ async function findCustomer(){
   if(!token){ msg("رابط التعبئة غير صحيح."); return; }
 
   const {data,error} = await client.rpc("get_customer_fill",{p_token:token});
-  if(error || !data){ msg("هذا الرابط غير صالح أو تم استخدامه/انتهت صلاحيته."); return; }
+  if(error || !data){ msg("هذا الرابط غير صالح أو أن الصفحة موقوفة من الإدارة."); return; }
 
   customer = data;
-  const keys=["name_ar","name_tr","bio_ar","bio_tr","whatsapp","instagram","tiktok","facebook","maps","whatsapp_channel","whatsapp_channel_label","website_url","phone","default_language"];
+  const keys=["name_ar","name_tr","bio_ar","bio_tr","whatsapp","instagram","tiktok","facebook","maps","whatsapp_channel","whatsapp_channel_label","website_url",
+    "custom_button_1_label","custom_button_1_url",
+    "custom_button_2_label","custom_button_2_url",
+    "custom_button_3_label","custom_button_3_url",
+    "custom_button_4_label","custom_button_4_url",
+    "phone","default_language"];
   keys.forEach(key=>{ const el=$(key); if(el) el.value = data[key] ?? ""; });
   $("show_photo").checked = data.show_photo !== false;
   if(data.photo_url && data.show_photo){
     $("preview").src=data.photo_url;
     $("preview").classList.remove("hidden");
   }
-  const uses=Number(data.fill_uses || 0);
-  $("remaining").textContent=`المتاح: ${Math.max(0,2-uses)} استخدام من أصل 2.`;
+  $("remaining").textContent="الرابط دائم — يمكنك تعديل البيانات وحفظها متى شئت.";
   $("formCard").classList.remove("hidden");
 }
 
@@ -161,6 +179,14 @@ $("submitBtn").addEventListener("click",async()=>{
       whatsapp_channel:$("whatsapp_channel").value.trim()||null,
       whatsapp_channel_label:$("whatsapp_channel_label").value.trim()||null,
       website_url:$("website_url").value.trim()||null,
+      custom_button_1_label:$("custom_button_1_label").value.trim()||null,
+      custom_button_1_url:$("custom_button_1_url").value.trim()||null,
+      custom_button_2_label:$("custom_button_2_label").value.trim()||null,
+      custom_button_2_url:$("custom_button_2_url").value.trim()||null,
+      custom_button_3_label:$("custom_button_3_label").value.trim()||null,
+      custom_button_3_url:$("custom_button_3_url").value.trim()||null,
+      custom_button_4_label:$("custom_button_4_label").value.trim()||null,
+      custom_button_4_url:$("custom_button_4_url").value.trim()||null,
       phone:$("phone").value.trim()||null,
       default_language:$("default_language").value,
       show_photo:$("show_photo").checked,
@@ -170,17 +196,9 @@ $("submitBtn").addEventListener("click",async()=>{
     const {data:result,error}=await client.rpc("submit_customer_form",{payload});
     if(error) throw error;
 
-    const uses=Number(result?.fill_uses || 0);
-    const remaining=Math.max(0, Number(result?.remaining_uses ?? (2-uses)));
-    $("remaining").textContent=`المتاح: ${remaining} استخدام من أصل 2.`;
-
-    if(remaining>0){
-      msg("تم حفظ بياناتك بنجاح. يمكنك استخدام نفس الرابط مرة ثانية لإكمال أو تعديل البيانات.");
-      $("submitBtn").textContent="حفظ التحديث";
-    }else{
-      $("formCard").classList.add("hidden");
-      msg("تم حفظ بياناتك بنجاح بالمرتين المسموحتين.");
-    }
+    $("remaining").textContent="الرابط دائم — يمكنك تعديل البيانات وحفظها متى شئت.";
+    msg("تم حفظ بياناتك بنجاح. يمكنك العودة إلى نفس الرابط والتعديل في أي وقت.");
+    $("submitBtn").textContent="حفظ التحديث";
   }catch(e){
     msg("تعذر إرسال البيانات: "+e.message);
   }
