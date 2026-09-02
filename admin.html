@@ -199,6 +199,47 @@ td:last-child button{padding:6px 7px;font-size:10px;margin:2px 1px}
           <input id="website_url" placeholder="https://example.com">
         </div>
 
+        <div class="field full" style="margin-top:4px">
+          <label style="font-size:15px">أزرار إضافية حسب الطلب <span class="optional-note">(اختياري)</span></label>
+          <div class="muted">مثال: X / Trendyol / Hepsiburada / متجر العميل. يظهر الزر فقط إذا تم وضع رابط له.</div>
+        </div>
+
+        <div class="field">
+          <label>اسم الزر الإضافي 1</label>
+          <input id="custom_button_1_label" placeholder="مثلاً: Trendyol">
+        </div>
+        <div class="field">
+          <label>رابط الزر الإضافي 1</label>
+          <input id="custom_button_1_url" placeholder="https://...">
+        </div>
+
+        <div class="field">
+          <label>اسم الزر الإضافي 2</label>
+          <input id="custom_button_2_label" placeholder="مثلاً: Hepsiburada">
+        </div>
+        <div class="field">
+          <label>رابط الزر الإضافي 2</label>
+          <input id="custom_button_2_url" placeholder="https://...">
+        </div>
+
+        <div class="field">
+          <label>اسم الزر الإضافي 3</label>
+          <input id="custom_button_3_label" placeholder="مثلاً: X">
+        </div>
+        <div class="field">
+          <label>رابط الزر الإضافي 3</label>
+          <input id="custom_button_3_url" placeholder="https://...">
+        </div>
+
+        <div class="field">
+          <label>اسم الزر الإضافي 4</label>
+          <input id="custom_button_4_label" placeholder="مثلاً: متجرنا">
+        </div>
+        <div class="field">
+          <label>رابط الزر الإضافي 4</label>
+          <input id="custom_button_4_url" placeholder="https://...">
+        </div>
+
         <div class="field">
           <label>رقم الهاتف</label>
           <input id="phone">
@@ -257,7 +298,7 @@ td:last-child button{padding:6px 7px;font-size:10px;margin:2px 1px}
 
       <div id="fillLinkBox" class="card hidden" style="margin-top:16px;background:#fbfaf5">
         <h2 style="margin-bottom:8px">رابط تعبئة بيانات العميل</h2>
-        <div class="muted">أرسله للعميل ليملأ بياناته مرة واحدة.</div>
+        <div class="muted">أرسله للعميل، ويمكنه تعديل بياناته من نفس الرابط في أي وقت.</div>
         <div style="display:flex;gap:8px;align-items:stretch;margin-top:10px;flex-wrap:wrap">
           <input id="fillLink" readonly style="flex:1;min-width:260px">
           <button class="secondary" id="copyFillLinkBtn" type="button">نسخ الرابط</button>
@@ -349,6 +390,10 @@ function clearForm(){
     "name_ar","name_tr","bio_ar","bio_tr","whatsapp",
     "instagram","tiktok","facebook","maps","whatsapp_channel",
     "whatsapp_channel_label","website_url",
+    "custom_button_1_label","custom_button_1_url",
+    "custom_button_2_label","custom_button_2_url",
+    "custom_button_3_label","custom_button_3_url",
+    "custom_button_4_label","custom_button_4_url",
     "phone","photo_url"
   ].forEach(id => $(id).value = "");
   ["photo_file"]
@@ -461,6 +506,14 @@ function formData(){
     whatsapp_channel: $("whatsapp_channel").value.trim() || null,
     whatsapp_channel_label: $("whatsapp_channel_label").value.trim() || null,
     website_url: $("website_url").value.trim() || null,
+    custom_button_1_label: $("custom_button_1_label").value.trim() || null,
+    custom_button_1_url: $("custom_button_1_url").value.trim() || null,
+    custom_button_2_label: $("custom_button_2_label").value.trim() || null,
+    custom_button_2_url: $("custom_button_2_url").value.trim() || null,
+    custom_button_3_label: $("custom_button_3_label").value.trim() || null,
+    custom_button_3_url: $("custom_button_3_url").value.trim() || null,
+    custom_button_4_label: $("custom_button_4_label").value.trim() || null,
+    custom_button_4_url: $("custom_button_4_url").value.trim() || null,
     phone: $("phone").value.trim() || null,
     photo_url: $("photo_url").value.trim() || null,
     show_photo: $("show_photo").checked,
@@ -615,7 +668,7 @@ function renderCustomers(){
       <td>${escapeHtml(row.slug)}</td>
       <td>${row.default_language === "tr" ? "Türkçe" : "العربية"}</td>
       <td>${status}</td>
-      <td>${row.fill_token ? (Number(row.fill_uses || (row.fill_used ? 1 : 0)) >= 2 ? '<span class="badge active">2/2</span>' : `<span class="badge inactive">${Number(row.fill_uses || 0)}/2</span>`) : '<span class="badge inactive">غير منشأ</span>'}</td>
+      <td>${row.fill_token ? '<span class="badge active">دائم</span>' : '<span class="badge inactive">غير منشأ</span>'}</td>
       <td><span class="badge active">${Number(row.page_views || 0)}</span></td>
       <td>
         <button class="secondary" data-edit-id="${row.id}" onclick="editCustomer('${row.id}');return false;">تعديل</button>
@@ -655,6 +708,10 @@ async function editCustomer(id){
     name_ar:1,name_tr:1,bio_ar:1,bio_tr:1,whatsapp:1,
     instagram:1,tiktok:1,facebook:1,maps:1,whatsapp_channel:1,
     whatsapp_channel_label:1,website_url:1,
+    custom_button_1_label:1,custom_button_1_url:1,
+    custom_button_2_label:1,custom_button_2_url:1,
+    custom_button_3_label:1,custom_button_3_url:1,
+    custom_button_4_label:1,custom_button_4_url:1,
     phone:1,photo_url:1
   }).forEach(key=>{
     const field = $(key);
@@ -679,10 +736,7 @@ async function editCustomer(id){
     const url = `${window.location.origin}${window.location.pathname.replace(/admin\.html$/,"")}fill.html?token=${encodeURIComponent(data.fill_token)}`;
     $("fillLink").value = url;
     $("fillLinkBox").classList.remove("hidden");
-    const uses = Number(data.fill_uses || (data.fill_used ? 1 : 0));
-    $("fillStatus").textContent = uses >= 2
-      ? "تم استخدام الرابط مرتين — لم يعد متاحًا للتعبئة."
-      : `تم استخدام الرابط ${uses}/2${data.fill_expires_at ? ` — صالح حتى ${new Date(data.fill_expires_at).toLocaleString("ar-TR")}` : ""}`;
+    $("fillStatus").textContent = "رابط دائم — يمكن للعميل تعديل بياناته من نفس الرابط في أي وقت.";
   }
 
   $("editorCard").classList.remove("hidden");
@@ -858,13 +912,12 @@ $("newFillLinkBtn").addEventListener("click", async ()=>{
     return;
   }
   const fillToken = crypto.randomUUID().replaceAll("-", "") + crypto.randomUUID().replaceAll("-", "");
-  const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
 
   const {data,error} = await client
     .from("customers")
-    .update({fill_token:fillToken,fill_used:false,fill_uses:0,fill_expires_at:expires,updated_at:new Date().toISOString()})
+    .update({fill_token:fillToken,fill_used:false,fill_uses:0,fill_expires_at:null,updated_at:new Date().toISOString()})
     .eq("id",editingId)
-    .select("fill_token,fill_used,fill_uses,fill_expires_at")
+    .select("fill_token")
     .single();
 
   if(error){
@@ -875,7 +928,7 @@ $("newFillLinkBtn").addEventListener("click", async ()=>{
   const url = `${window.location.origin}${window.location.pathname.replace(/admin\.html$/,"")}fill.html?token=${encodeURIComponent(data.fill_token)}`;
   $("fillLink").value = url;
   $("fillLinkBox").classList.remove("hidden");
-  $("fillStatus").textContent = `تم إنشاء رابط جديد — الاستخدام 0/2 — ينتهي في ${new Date(data.fill_expires_at).toLocaleString("ar-TR")}`;
+  $("fillStatus").textContent = "تم إنشاء رابط دائم جديد — الرابط القديم لم يعد صالحًا.";
 });
 
 $("saveBtn").addEventListener("click", async ()=>{
@@ -918,12 +971,11 @@ $("saveBtn").addEventListener("click", async ()=>{
         .eq("id",editingId);
     }else{
       const fillToken = crypto.randomUUID().replaceAll("-", "") + crypto.randomUUID().replaceAll("-", "");
-      const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
       payload.is_active = true;
       payload.fill_token = fillToken;
       payload.fill_used = false;
       payload.fill_uses = 0;
-      payload.fill_expires_at = expires;
+      payload.fill_expires_at = null;
       result = await client.from("customers").insert(payload);
     }
 
@@ -955,9 +1007,7 @@ $("saveBtn").addEventListener("click", async ()=>{
       const fillUrl = `${window.location.origin}${window.location.pathname.replace(/admin\.html$/,"")}fill.html?token=${encodeURIComponent(savedRow.fill_token)}`;
       $("fillLink").value = fillUrl;
       $("fillLinkBox").classList.remove("hidden");
-      $("fillStatus").textContent = savedRow.fill_used
-        ? "تم استخدام الرابط."
-        : (savedRow.fill_expires_at ? `صالح حتى: ${new Date(savedRow.fill_expires_at).toLocaleString("ar-TR")}` : "الرابط صالح حتى يتم استخدامه.");
+      $("fillStatus").textContent = "رابط دائم — يمكن للعميل تعديل بياناته من نفس الرابط في أي وقت.";
     }
 
     const wasEditing = Boolean(editingId);
