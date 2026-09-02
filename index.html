@@ -82,7 +82,11 @@ body.maintenance-active #customerBootGate{
   display:none !important;
 }
 </style>
-<style>.link.website.hidden{display:none!important}</style>
+<style>
+.link.website.hidden,
+.link.custom-link.hidden{display:none!important}
+.link.custom-link{background:linear-gradient(100deg,#193c2e,#174f36)}
+</style>
 
 <style id="website-button-gold">
 #websiteLink{
@@ -250,6 +254,27 @@ body.maintenance-active #customerBootGate{
           <span class="arrow">‹</span>
         </a>
 
+        <a class="link custom-link hidden" id="customLink1" href="#" target="_blank" rel="noopener">
+          <span class="icon">🔗</span>
+          <span class="link-text"><b id="customButtonLabel1">الرابط</b><small data-ar="فتح الرابط" data-tr="Bağlantıyı aç">فتح الرابط</small></span>
+          <span class="arrow">‹</span>
+        </a>
+        <a class="link custom-link hidden" id="customLink2" href="#" target="_blank" rel="noopener">
+          <span class="icon">🔗</span>
+          <span class="link-text"><b id="customButtonLabel2">الرابط</b><small data-ar="فتح الرابط" data-tr="Bağlantıyı aç">فتح الرابط</small></span>
+          <span class="arrow">‹</span>
+        </a>
+        <a class="link custom-link hidden" id="customLink3" href="#" target="_blank" rel="noopener">
+          <span class="icon">🔗</span>
+          <span class="link-text"><b id="customButtonLabel3">الرابط</b><small data-ar="فتح الرابط" data-tr="Bağlantıyı aç">فتح الرابط</small></span>
+          <span class="arrow">‹</span>
+        </a>
+        <a class="link custom-link hidden" id="customLink4" href="#" target="_blank" rel="noopener">
+          <span class="icon">🔗</span>
+          <span class="link-text"><b id="customButtonLabel4">الرابط</b><small data-ar="فتح الرابط" data-tr="Bağlantıyı aç">فتح الرابط</small></span>
+          <span class="arrow">‹</span>
+        </a>
+
 
       </div>
 
@@ -352,6 +377,39 @@ body.maintenance-active #customerBootGate{
     }
   }
 
+  function normalizeExternalUrl(value) {
+    const clean = String(value || "").trim();
+    if (!clean) return "";
+    if (/^[a-z][a-z0-9+.-]*:/i.test(clean)) return clean;
+    return "https://" + clean.replace(/^\/\//, "");
+  }
+
+  function applyCustomButton(number, labelValue, urlValue) {
+    const link = document.getElementById(`customLink${number}`);
+    const labelEl = document.getElementById(`customButtonLabel${number}`);
+    if (!link || !labelEl) return;
+
+    const url = normalizeExternalUrl(urlValue);
+    const label = String(labelValue || "").trim() || "الرابط";
+
+    labelEl.dataset.ar = label;
+    labelEl.dataset.tr = label;
+    labelEl.textContent = label;
+
+    link.classList.toggle("hidden", !url);
+    link.style.display = url ? "" : "none";
+
+    if (url) {
+      link.href = url;
+      link.target = "_blank";
+      link.rel = "noopener";
+    } else {
+      link.removeAttribute("href");
+      link.removeAttribute("target");
+      link.removeAttribute("rel");
+    }
+  }
+
   function slugFromUrl() {
     const params = new URLSearchParams(window.location.search);
     const querySlug = (params.get("client") || params.get("slug") || "").trim().toLowerCase();
@@ -445,6 +503,10 @@ body.maintenance-active #customerBootGate{
       }
     }
 
+    applyCustomButton(1, customer.custom_button_1_label, customer.custom_button_1_url);
+    applyCustomButton(2, customer.custom_button_2_label, customer.custom_button_2_url);
+    applyCustomButton(3, customer.custom_button_3_label, customer.custom_button_3_url);
+    applyCustomButton(4, customer.custom_button_4_label, customer.custom_button_4_url);
 
 
     // PDF: show only when this customer actually has a PDF enabled.
@@ -635,11 +697,7 @@ body.maintenance-active #customerBootGate{
     if (portfolioSection) portfolioSection.style.display = "none";
 
     const {data, error} = await supabaseClient
-      .from("customers")
-      .select("*")
-      .eq("slug", slug)
-      .eq("is_active", true)
-      .single();
+      .rpc("get_public_customer", {p_slug: slug});
 
     if (error || !data) {
       console.error("Customer load failed:", error || "Customer not found");
