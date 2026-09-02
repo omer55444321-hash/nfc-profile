@@ -343,6 +343,7 @@ function showSiteLink(slug){
 
 function clearForm(){
   editingId = null;
+  removeLogoRequested = false;
   $("editorTitle").textContent = "إضافة عميل";
   [
     "name_ar","name_tr","bio_ar","bio_tr","whatsapp",
@@ -465,8 +466,7 @@ function formData(){
     show_photo: $("show_photo").checked,
     pdf_button_label: $("pdf_button_label").value.trim() || null,
     pdf_enabled: $("pdf_enabled").checked,
-    default_language: $("default_language").value,
-    is_active: true
+    default_language: $("default_language").value
   };
 }
 
@@ -645,6 +645,7 @@ async function editCustomer(id){
     return;
   }
 
+  removeLogoRequested = false;
   editingId = id;
   $("editorTitle").textContent = "تعديل العميل";
   $("editorCard").classList.remove("hidden");
@@ -918,6 +919,7 @@ $("saveBtn").addEventListener("click", async ()=>{
     }else{
       const fillToken = crypto.randomUUID().replaceAll("-", "") + crypto.randomUUID().replaceAll("-", "");
       const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+      payload.is_active = true;
       payload.fill_token = fillToken;
       payload.fill_used = false;
       payload.fill_uses = 0;
