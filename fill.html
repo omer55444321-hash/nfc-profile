@@ -199,7 +199,8 @@ async function uploadPhotoIfNeeded(){
 
   const {error}=await client.storage.from("customer-images").upload(path,file,{upsert:true,contentType:file.type});
   if(error) throw error;
-  return client.storage.from("customer-images").getPublicUrl(path).data.publicUrl;
+  const publicUrl = client.storage.from("customer-images").getPublicUrl(path).data.publicUrl;
+  return `${publicUrl}?v=${Date.now()}`;
 }
 
 $("submitBtn").addEventListener("click",async()=>{
