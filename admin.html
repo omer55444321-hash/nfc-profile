@@ -466,11 +466,22 @@ function setPreview(inputId, previewId){
       box.textContent = "الملف يجب أن يكون صورة.";
       return;
     }
+    if(inputId === "photo_file") {
+      removeLogoRequested = false;
+      $("show_photo").checked = true;
+    }
     const url = URL.createObjectURL(file);
     box.innerHTML = `<img class="file-preview" src="${url}" alt="">`;
   });
 }
 setPreview("photo_file", "photo_preview");
+
+$("photo_url")?.addEventListener("input", ()=>{
+  if($("photo_url").value.trim()) {
+    removeLogoRequested = false;
+    $("show_photo").checked = true;
+  }
+});
 
 async function uploadImage(file, slug, slot){
   if(!file) return null;
@@ -488,7 +499,9 @@ async function uploadImage(file, slug, slot){
   if(error) throw error;
 
   const {data} = client.storage.from("customer-images").getPublicUrl(path);
-  return data.publicUrl;
+  // Cache-busting: the storage path may stay the same after replacement,
+  // so save a versioned public URL to force browsers/CDN to fetch the new image.
+  return `${data.publicUrl}?v=${Date.now()}`;
 }
 
 async function uploadCustomerImages(slug){
