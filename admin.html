@@ -75,6 +75,21 @@ td:last-child button{padding:6px 7px;font-size:10px;margin:2px 1px}
   color:#999;
   margin-inline-start:4px;
 }
+
+.theme-picker{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:4px}
+.theme-option{position:relative;display:flex;align-items:center;gap:10px;border:2px solid #e3dfd3;border-radius:14px;padding:12px;cursor:pointer;background:#fff;transition:.15s}
+.theme-option:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,.06)}
+.theme-option input{position:absolute;opacity:0;pointer-events:none}
+.theme-option:has(input:checked){border-color:#c99b3b;box-shadow:0 0 0 2px rgba(201,155,59,.12)}
+.theme-option span:last-child{display:flex;flex-direction:column;line-height:1.35}
+.theme-option small{font-size:11px;color:#777;font-weight:500}
+.theme-dot{width:34px;height:34px;border-radius:10px;flex:0 0 34px;border:1px solid rgba(0,0,0,.12)}
+.theme-preview-classic .theme-dot{background:linear-gradient(135deg,#171819 0 58%,#d0a43e 58%)}
+.theme-preview-corporate .theme-dot{background:linear-gradient(135deg,#08090b 0 72%,#d4ac49 72%)}
+.theme-preview-feminine .theme-dot{background:linear-gradient(135deg,#fff5f2 0 55%,#d79f9b 55%)}
+.theme-preview-cover .theme-dot{background:linear-gradient(180deg,#b89162 0 48%,#fff 48%)}
+@media(max-width:700px){.theme-picker{grid-template-columns:1fr}}
+
 </style>
 
 </head>
@@ -147,6 +162,29 @@ td:last-child button{padding:6px 7px;font-size:10px;margin:2px 1px}
             <option value="ar">العربية</option>
             <option value="tr">Türkçe</option>
           </select>
+        </div>
+
+        <div class="field full">
+          <label>تصميم الموقع</label>
+          <div class="theme-picker">
+            <label class="theme-option theme-preview-corporate">
+              <input type="radio" name="theme_style" value="corporate">
+              <span class="theme-dot"></span><span><b>ستايل 1 — شركات فاخر</b><small>أسود وذهبي أنيق</small></span>
+            </label>
+            <label class="theme-option theme-preview-feminine">
+              <input type="radio" name="theme_style" value="feminine">
+              <span class="theme-dot"></span><span><b>ستايل 2 — نسائي</b><small>وردي وبيج ناعم</small></span>
+            </label>
+            <label class="theme-option theme-preview-classic">
+              <input type="radio" name="theme_style" value="classic" checked>
+              <span class="theme-dot"></span><span><b>ستايل 3 — الكلاسيكي</b><small>التصميم الحالي</small></span>
+            </label>
+            <label class="theme-option theme-preview-cover">
+              <input type="radio" name="theme_style" value="cover">
+              <span class="theme-dot"></span><span><b>ستايل 4 — غلاف مودرن</b><small>الصورة تظهر كغلاف عريض</small></span>
+            </label>
+          </div>
+          <div class="muted">اختيار التصميم يغيّر الشكل فقط. رابط العميل وبياناته لا تتغير.</div>
         </div>
 
         <div class="field full">
@@ -400,6 +438,8 @@ function clearForm(){
     .forEach(id => $(id).value = "");
 $("photo_preview").textContent = "";
   $("default_language").value = "ar";
+  const classicTheme = document.querySelector('input[name="theme_style"][value="classic"]');
+  if(classicTheme) classicTheme.checked = true;
   $("show_photo").checked = true;
   $("pdf_file").value = "";
   $("pdf_status").textContent = "لم يتم اختيار ملف PDF.";
@@ -519,7 +559,8 @@ function formData(){
     show_photo: $("show_photo").checked,
     pdf_button_label: $("pdf_button_label").value.trim() || null,
     pdf_enabled: $("pdf_enabled").checked,
-    default_language: $("default_language").value
+    default_language: $("default_language").value,
+    theme_style: document.querySelector('input[name="theme_style"]:checked')?.value || "classic"
   };
 }
 
@@ -723,6 +764,9 @@ async function editCustomer(id){
   $("website_url").value = data.website_url || "";
 
   $("default_language").value = data.default_language || "ar";
+  const savedTheme = ["classic","corporate","feminine","cover"].includes(data.theme_style) ? data.theme_style : "classic";
+  const savedThemeRadio = document.querySelector(`input[name="theme_style"][value="${savedTheme}"]`);
+  if(savedThemeRadio) savedThemeRadio.checked = true;
   $("show_photo").checked = data.show_photo !== false;
   $("pdf_button_label").value = data.pdf_button_label || "";
   $("pdf_enabled").checked = data.pdf_enabled !== false;

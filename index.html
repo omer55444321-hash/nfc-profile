@@ -109,6 +109,7 @@ body.maintenance-active #customerBootGate{
 }
 </style>
 
+  <link rel="stylesheet" href="themes.css">
 </head>
 
 <body>
@@ -424,11 +425,20 @@ body.maintenance-active #customerBootGate{
     return "";
   }
 
+  function applyTheme(themeValue) {
+    const allowed = ["classic", "corporate", "feminine", "cover"];
+    const theme = allowed.includes(String(themeValue || "")) ? String(themeValue) : "classic";
+    document.body.classList.remove("theme-classic", "theme-corporate", "theme-feminine", "theme-cover");
+    document.body.classList.add(`theme-${theme}`);
+  }
+
   function applyCustomer(customer) {
     const nameAr = customer.name_ar || "أونلاين للهدايا";
     const nameTr = customer.name_tr || nameAr;
     const bioAr = customer.bio_ar || "أهلاً بكم في صفحتي الرقمية";
     const bioTr = customer.bio_tr || bioAr;
+
+    applyTheme(customer.theme_style);
 
     const profileName = document.getElementById("profileName");
     const profileBio = document.getElementById("profileBio");

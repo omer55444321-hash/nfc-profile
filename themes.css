@@ -1,0 +1,176 @@
+/* =========================================================
+   Customer theme system
+   Existing customers default to theme-classic, which intentionally
+   has no overrides so the current production design stays unchanged.
+   ========================================================= */
+
+/* ---------- THEME 2: CORPORATE LUXURY ---------- */
+body.theme-corporate{
+  background:#090a0c;
+  --gold:#d1a843;
+  --gold2:#f0cf79;
+}
+body.theme-corporate .page{background:#0d0f12;color:#fff;box-shadow:0 8px 46px rgba(0,0,0,.42)}
+body.theme-corporate .hero{
+  min-height:520px;
+  background:
+    radial-gradient(circle at 50% 10%,rgba(240,207,121,.09),transparent 30%),
+    linear-gradient(150deg,#1a1d22 0%,#090a0c 58%,#121419 100%);
+  border-bottom:2px solid rgba(209,168,67,.8);
+  border-radius:0 0 22px 22px;
+  box-shadow:0 18px 34px rgba(0,0,0,.38);
+}
+body.theme-corporate .hero:before{opacity:.28}
+body.theme-corporate .avatar{
+  width:225px;height:225px;border-radius:30px;border:2px solid var(--gold2);
+  background:#101216;padding:8px;box-shadow:0 18px 42px rgba(0,0,0,.5),0 0 0 1px rgba(240,207,121,.18)
+}
+body.theme-corporate h1{letter-spacing:.1px}
+body.theme-corporate .content{background:#0d0f12}
+body.theme-corporate .link{
+  background:linear-gradient(135deg,#15181d,#0f1115) !important;
+  border:1px solid rgba(209,168,67,.55) !important;
+  color:#fff !important;
+  border-radius:18px;
+  box-shadow:0 9px 22px rgba(0,0,0,.28) !important;
+}
+body.theme-corporate .link .icon{background:rgba(209,168,67,.14);color:#f0cf79}
+body.theme-corporate .link .link-text,
+body.theme-corporate .link b,
+body.theme-corporate .link small,
+body.theme-corporate .link .arrow{color:#fff !important}
+body.theme-corporate .link.contact{
+  background:linear-gradient(135deg,#e4c46e,#aa7b19) !important;
+  color:#15110a !important;border-color:#f0cf79 !important
+}
+body.theme-corporate .link.contact .link-text,
+body.theme-corporate .link.contact b,
+body.theme-corporate .link.contact small,
+body.theme-corporate .link.contact .arrow{color:#15110a !important}
+body.theme-corporate .portfolio{color:#fff}
+body.theme-corporate .work{background:#121419;border-color:rgba(209,168,67,.42)}
+body.theme-corporate .section-title span{background:linear-gradient(90deg,transparent,#d1a843)}
+
+/* ---------- THEME 3: FEMININE ---------- */
+body.theme-feminine{
+  background:#f3e9e7;
+  --gold:#bd7d7b;
+  --gold2:#ddb0ad;
+  color:#553936;
+}
+body.theme-feminine .page{background:#fff9f7;color:#553936;box-shadow:0 10px 40px rgba(104,65,61,.13)}
+body.theme-feminine .hero{
+  min-height:520px;
+  background:
+    radial-gradient(circle at 12% 20%,rgba(255,255,255,.8),transparent 24%),
+    linear-gradient(150deg,#f6dfda 0%,#fff9f7 54%,#ecd0cb 100%);
+  color:#5d3a37;
+  border-bottom:3px solid #d7a19d;
+  box-shadow:0 14px 28px rgba(104,65,61,.12);
+}
+body.theme-feminine .hero:before{
+  background:
+    radial-gradient(circle at 13% 18%,rgba(189,125,123,.18) 0 2px,transparent 3px),
+    radial-gradient(circle at 82% 26%,rgba(189,125,123,.14) 0 2px,transparent 3px);
+  opacity:.8
+}
+body.theme-feminine .gold-wave{border-color:rgba(189,125,123,.32);opacity:.35}
+body.theme-feminine .lang-switch{background:rgba(255,255,255,.72);border-color:#c88986}
+body.theme-feminine .lang-btn{color:#6a4541}
+body.theme-feminine .lang-btn.active{background:#c88986;color:#fff}
+body.theme-feminine .lang-sep{color:#b68a86}
+body.theme-feminine .avatar{
+  width:220px;height:220px;border-radius:36px;border:4px solid #e5b9b5;background:#fff6f4;
+  padding:6px;box-shadow:0 16px 35px rgba(104,65,61,.17)
+}
+body.theme-feminine .subtitle{color:#ad716f}
+body.theme-feminine .gold-line{background:#c88986}
+body.theme-feminine .content{background:#fff9f7}
+body.theme-feminine .link{
+  background:linear-gradient(100deg,#efd1cd,#dca5a2) !important;
+  color:#5d3a37 !important;border:1px solid rgba(189,125,123,.3) !important;
+  border-radius:22px;box-shadow:0 8px 18px rgba(104,65,61,.10) !important
+}
+body.theme-feminine .link .icon{background:rgba(255,255,255,.5);color:#935f5d}
+body.theme-feminine .link .link-text,
+body.theme-feminine .link b,
+body.theme-feminine .link small,
+body.theme-feminine .link .arrow{color:#5d3a37 !important}
+body.theme-feminine .link.contact{background:linear-gradient(100deg,#cf928e,#b87875) !important;color:#fff !important}
+body.theme-feminine .link.contact .link-text,
+body.theme-feminine .link.contact b,
+body.theme-feminine .link.contact small,
+body.theme-feminine .link.contact .arrow{color:#fff !important}
+body.theme-feminine .portfolio{color:#5d3a37}
+body.theme-feminine .work{background:#f0d9d5;border-color:#d8aaa6;box-shadow:0 8px 18px rgba(104,65,61,.12)}
+body.theme-feminine .work span{color:#5d3a37}
+body.theme-feminine .section-title span{background:linear-gradient(90deg,transparent,#c88986)}
+
+/* ---------- THEME 4: MODERN COVER ---------- */
+body.theme-cover{
+  background:#ececec;
+  --gold:#c7a23e;
+  --gold2:#dfc46c;
+  color:#171717;
+}
+body.theme-cover .page{background:#fff;color:#171717;box-shadow:0 8px 38px rgba(0,0,0,.12)}
+body.theme-cover .hero{
+  min-height:0;
+  background:#fff;
+  color:#171717;
+  border-bottom:0;
+  border-radius:0;
+  box-shadow:none;
+  overflow:hidden;
+}
+body.theme-cover .hero:before,
+body.theme-cover .gold-wave{display:none}
+body.theme-cover .lang-switch{
+  top:20px;right:5%;background:rgba(255,255,255,.92);border:1px solid rgba(199,162,62,.65);
+  box-shadow:0 5px 18px rgba(0,0,0,.08)
+}
+body.theme-cover .lang-btn{color:#222}
+body.theme-cover .lang-btn.active{background:#d7b64e;color:#fff}
+body.theme-cover .lang-sep{color:#9b9b9b}
+body.theme-cover .profile{padding:88px 5% 20px}
+body.theme-cover .avatar{
+  display:block;
+  width:100%;
+  max-width:none;
+  height:300px;
+  border-radius:26px;
+  object-fit:cover;
+  object-position:center;
+  border:0;
+  padding:0;
+  background:#ece8df;
+  box-shadow:0 12px 30px rgba(0,0,0,.12);
+  margin:0 auto 24px;
+}
+body.theme-cover h1{color:#171717;margin-top:10px}
+body.theme-cover .subtitle{color:#b38c2d}
+body.theme-cover .bio{color:#4c4c4c;max-width:760px;margin:16px auto 9px}
+body.theme-cover .content{background:#fff;padding-top:18px}
+body.theme-cover .link{
+  border-radius:17px;
+  box-shadow:0 7px 18px rgba(0,0,0,.09);
+}
+body.theme-cover .link.custom-link{
+  background:#f1f2f4 !important;color:#1e1e1e !important;border:1px solid #e4e5e7 !important
+}
+body.theme-cover .link.custom-link .link-text,
+body.theme-cover .link.custom-link b,
+body.theme-cover .link.custom-link small,
+body.theme-cover .link.custom-link .arrow{color:#1e1e1e !important}
+body.theme-cover .link.custom-link .icon{background:#fff;color:#202020}
+body.theme-cover .portfolio{color:#171717}
+body.theme-cover .work{background:#fff;border:1px solid #e4e4e4;box-shadow:0 7px 16px rgba(0,0,0,.08)}
+body.theme-cover .work span{color:#222}
+body.theme-cover .section-title span{background:linear-gradient(90deg,transparent,#c7a23e)}
+
+@media(max-width:650px){
+  body.theme-corporate .avatar,body.theme-feminine .avatar{width:175px;height:175px}
+  body.theme-cover .profile{padding:76px 4% 16px}
+  body.theme-cover .avatar{height:215px;border-radius:20px;margin-bottom:18px}
+  body.theme-cover .content{padding-top:12px}
+}
