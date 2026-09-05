@@ -174,3 +174,24 @@ body.theme-cover .section-title span{background:linear-gradient(90deg,transparen
   body.theme-cover .avatar{height:215px;border-radius:20px;margin-bottom:18px}
   body.theme-cover .content{padding-top:12px}
 }
+
+
+/* =========================================================
+   MOBILE HERO GAP FIX — 2026-09-05
+   Themes 1, 2 and 3 should size the hero to its real content
+   on phones, just like theme 4, instead of forcing 520px.
+   Desktop layout is unchanged.
+   ========================================================= */
+@media(max-width:650px){
+  body.theme-classic .hero,
+  body.theme-corporate .hero,
+  body.theme-feminine .hero{
+    min-height:0 !important;
+  }
+
+  body.theme-classic .profile,
+  body.theme-corporate .profile,
+  body.theme-feminine .profile{
+    padding-bottom:18px;
+  }
+}
