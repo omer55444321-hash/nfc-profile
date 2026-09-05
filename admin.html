@@ -389,6 +389,9 @@ const SUPABASE_ANON_KEY = "sb_publishable_gQ0MHHnO15LjmWZijTV5Tw_0EbaynCE";
 const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let editingId = null;
+let editingSlug = null;
+let editorMode = "idle"; // idle | new | loading | edit
+let editRequestSerial = 0;
 let removeLogoRequested = false;
 let customersCache = [];
 
@@ -421,8 +424,12 @@ function showSiteLink(slug){
 }
 
 function clearForm(){
+  editRequestSerial++;
   editingId = null;
+  editingSlug = null;
+  editorMode = "idle";
   removeLogoRequested = false;
+  $("saveBtn").disabled = false;
   $("editorTitle").textContent = "إضافة عميل";
   [
     "name_ar","name_tr","bio_ar","bio_tr","whatsapp",
@@ -728,7 +735,7 @@ function renderCustomers(){
       <td>${row.fill_token ? '<span class="badge active">دائم</span>' : '<span class="badge inactive">غير منشأ</span>'}</td>
       <td><span class="badge active">${Number(row.page_views || 0)}</span></td>
       <td>
-        <button class="secondary" data-edit-id="${row.id}" onclick="editCustomer('${row.id}');return false;">تعديل</button>
+        <button class="secondary" data-edit-id="${row.id}" type="button">تعديل</button>
         <button class="${row.is_active ? "danger" : "ok"}" onclick="toggleCustomer('${row.id}', ${row.is_active})">
           ${row.is_active ? "إيقاف" : "تفعيل"}
         </button>
@@ -749,17 +756,39 @@ function escapeHtml(value){
 }
 
 async function editCustomer(id){
+  const requestSerial = ++editRequestSerial;
+
+  // Immediately invalidate the previous customer so Save can never write to it
+  // while the next customer is still loading.
+  editingId = null;
+  editingSlug = null;
+  editorMode = "loading";
+  removeLogoRequested = false;
+
+  $("photo_file").value = "";
+  $("pdf_file").value = "";
+  $("saveBtn").disabled = true;
+  $("editorTitle").textContent = "جارٍ تحميل بيانات العميل...";
+  $("editorCard").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+
   const {data,error} = await client.from("customers").select("*").eq("id",id).single();
+
+  // Ignore an older request if the user clicked another customer meanwhile.
+  if(requestSerial !== editRequestSerial) return;
+
   if(error){
+    editorMode = "idle";
+    $("saveBtn").disabled = false;
     showMsg("appMsg","تعذر فتح العميل: " + error.message);
     return;
   }
 
-  removeLogoRequested = false;
   editingId = id;
+  editingSlug = data.slug;
+  editorMode = "edit";
+  $("saveBtn").disabled = false;
   $("editorTitle").textContent = "تعديل العميل";
-  $("editorCard").classList.remove("hidden");
-  window.scrollTo({top:0,behavior:"smooth"});
 
   Object.keys({
     name_ar:1,name_tr:1,bio_ar:1,bio_tr:1,whatsapp:1,
@@ -799,8 +828,6 @@ async function editCustomer(id){
     $("fillStatus").textContent = "رابط دائم — يمكن للعميل تعديل بياناته من نفس الرابط في أي وقت.";
   }
 
-  $("editorCard").classList.remove("hidden");
-  window.scrollTo({top:0,behavior:"smooth"});
 }
 
 
@@ -922,6 +949,8 @@ $("logoutBtn").addEventListener("click", async ()=>{
 
 $("newBtn").addEventListener("click", ()=>{
   clearForm();
+  editorMode = "new";
+  $("editorTitle").textContent = "إضافة عميل";
   $("editorCard").classList.remove("hidden");
   window.scrollTo({top:0,behavior:"smooth"});
 });
@@ -993,6 +1022,20 @@ $("newFillLinkBtn").addEventListener("click", async ()=>{
 
 $("saveBtn").addEventListener("click", async ()=>{
   clearMsg("appMsg");
+
+  if(editorMode === "loading"){
+    showMsg("appMsg","انتظر حتى يكتمل تحميل بيانات العميل قبل الحفظ.");
+    return;
+  }
+  if(editorMode !== "new" && editorMode !== "edit"){
+    showMsg("appMsg","افتح عميلًا للتعديل أو اضغط إضافة عميل أولًا.");
+    return;
+  }
+  if(editorMode === "edit" && (!editingId || !editingSlug)){
+    showMsg("appMsg","تعذر تحديد العميل الحالي بأمان. أعد فتح العميل ثم حاول الحفظ.");
+    return;
+  }
+
   const payload = formData();
   if(removeLogoRequested){
     payload.photo_url = null;
@@ -1005,16 +1048,12 @@ $("saveBtn").addEventListener("click", async ()=>{
   }
 
   try{
-    if(!editingId){
+    if(editorMode === "new"){
       payload.slug = generateSlug();
     }else{
-      const {data:existing,error:existingError} = await client
-        .from("customers")
-        .select("slug")
-        .eq("id",editingId)
-        .single();
-      if(existingError) throw existingError;
-      payload.slug = existing.slug;
+      // Existing customer slug is immutable and comes from the customer that
+      // finished loading in editCustomer().
+      payload.slug = editingSlug;
     }
 
     const imageUrls = await uploadCustomerImages(payload.slug);
@@ -1024,7 +1063,7 @@ $("saveBtn").addEventListener("click", async ()=>{
     }
 
     let result;
-    if(editingId){
+    if(editorMode === "edit"){
       result = await client
         .from("customers")
         .update({...payload,updated_at:new Date().toISOString()})
@@ -1070,7 +1109,7 @@ $("saveBtn").addEventListener("click", async ()=>{
       $("fillStatus").textContent = "رابط دائم — يمكن للعميل تعديل بياناته من نفس الرابط في أي وقت.";
     }
 
-    const wasEditing = Boolean(editingId);
+    const wasEditing = editorMode === "edit";
 
     if (wasEditing && savedRow) {
       const i = customersCache.findIndex(r => r.id === editingId);
@@ -1102,7 +1141,10 @@ $("saveBtn").addEventListener("click", async ()=>{
       $("editorCard").classList.add("hidden");
       window.scrollTo({top:0,behavior:"smooth"});
       editingId = null;
+      editingSlug = null;
+      editorMode = "idle";
     } else {
+      editorMode = "new";
       $("editorCard").classList.remove("hidden");
     }
   }catch(error){
