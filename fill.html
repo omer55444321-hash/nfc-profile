@@ -195,12 +195,16 @@ async function uploadPhotoIfNeeded(){
 
   const token=tokenFromUrl();
   const ext=(file.name.split(".").pop()||"jpg").toLowerCase().replace(/[^a-z0-9]/g,"");
-  const path=`${token}/profile.${ext}`;
+  const uniqueId=`${Date.now()}-${crypto.randomUUID().replaceAll("-","").slice(0,10)}`;
+  const path=`${token}/profile-${uniqueId}.${ext}`;
 
-  const {error}=await client.storage.from("customer-images").upload(path,file,{upsert:true,contentType:file.type});
+  const {error}=await client.storage.from("customer-images").upload(
+    path,
+    file,
+    {upsert:false,contentType:file.type,cacheControl:"31536000"}
+  );
   if(error) throw error;
-  const publicUrl = client.storage.from("customer-images").getPublicUrl(path).data.publicUrl;
-  return `${publicUrl}?v=${Date.now()}`;
+  return client.storage.from("customer-images").getPublicUrl(path).data.publicUrl;
 }
 
 $("submitBtn").addEventListener("click",async()=>{
