@@ -490,18 +490,21 @@ async function uploadImage(file, slug, slot){
 
   const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
   const safeSlug = slug.replace(/[^a-z0-9_-]/g, "-");
-  const path = `${safeSlug}/${slot}.${ext}`;
+  const uniqueId = `${Date.now()}-${crypto.randomUUID().replaceAll("-", "").slice(0, 10)}`;
+  const path = `${safeSlug}/${slot}-${uniqueId}.${ext}`;
 
   const {error} = await client.storage
     .from("customer-images")
-    .upload(path, file, {upsert:true, contentType:file.type});
+    .upload(path, file, {
+      upsert:false,
+      contentType:file.type,
+      cacheControl:"31536000"
+    });
 
   if(error) throw error;
 
   const {data} = client.storage.from("customer-images").getPublicUrl(path);
-  // Cache-busting: the storage path may stay the same after replacement,
-  // so save a versioned public URL to force browsers/CDN to fetch the new image.
-  return `${data.publicUrl}?v=${Date.now()}`;
+  return data.publicUrl;
 }
 
 async function uploadCustomerImages(slug){
